@@ -748,7 +748,9 @@ module.run(['$templateCache', function($templateCache) {
     '                    <span style="font-weight: bold;">Cargo Units</span>\n' +
     '                    <span ng-bind="currentSpace()"></span> (<span ng-bind="maxSpace() - currentSpace()"></span> available)<br>\n' +
     '                    <span style="font-weight: bold;">Hull Class </span>\n' +
-    '                    <span ng-bind=\'ship.hull.Class\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE"></span>)\n' +
+    '                    <span ng-bind=\'ship.hull.Class\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE"></span>)<br>\n' +
+    '                    <span style="font-weight: bold;">Hull Configuration </span>\n' +
+    '                    <span ng-bind=\'ship.hull | json\'></span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
