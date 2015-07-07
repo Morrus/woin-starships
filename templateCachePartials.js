@@ -117,39 +117,6 @@ module.run(['$templateCache', function($templateCache) {
     '        <td ng-bind="c.Checks"></td>\n' +
     '    </tr>\n' +
     '    </tbody>\n' +
-    '</table>\n' +
-    '\n' +
-    '<h2>Sensor Systems</h2>\n' +
-    '<p class="explainer">\n' +
-    '\n' +
-    '    A sensor array is a collection of sensors and sub processors designed to gather and collate information. They include navigational and combat sensors, as well as equipment which measures and records the environment capable of detecting a wide range of phenomena. Sensors also include communications equipment, and are used for offensive electronic warfare.</p>\n' +
-    '<table class="table table-striped">\n' +
-    '    <thead>\n' +
-    '    <tr>\n' +
-    '        <td></td>\n' +
-    '        <td>Sensor Systems</td>\n' +
-    '        <td>Cost</td>\n' +
-    '        <td>Size</td>\n' +
-    '        <td>Space</td>\n' +
-    '        <td>Range</td>\n' +
-    '        <td>Range Inc</td>\n' +
-    '        <td>DEFENSE</td>\n' +
-    '        <td>Checks</td>\n' +
-    '    </tr>\n' +
-    '    </thead>\n' +
-    '    <tbody>\n' +
-    '    <tr ng-repeat="s in sensors">\n' +
-    '        <td><input type="radio" ng-model="ship.sensor" ng-value="s"></td>\n' +
-    '        <td ng-bind="s[\'Sensor Systems\']"></td>\n' +
-    '        <td ng-bind="s.Cost"></td>\n' +
-    '        <td ng-bind="s.Size"></td>\n' +
-    '        <td ng-bind="s.Space"></td>\n' +
-    '        <td ng-bind="s.Range"></td>\n' +
-    '        <td ng-bind="s[\'Range Inc\']"></td>\n' +
-    '        <td ng-bind="s.DEFENSE"></td>\n' +
-    '        <td ng-bind="s.Checks"></td>\n' +
-    '    </tr>\n' +
-    '    </tbody>\n' +
     '</table>');
 }]);
 })();
@@ -529,6 +496,16 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/partials/hull.html',
+    '<h2>Starship Hull Configuration</h2>\n' +
+    '<p class="explainer">\n' +
+    '    Select an (optional) hull configuration. There are as many different vessel types as there are stars in the\n' +
+    '    sky. The following list is a summary of some common classifications listed in approximate typical size order. Each\n' +
+    '    configuration grants the ship one exploit.\n' +
+    '</p>\n' +
+    '<select style=\'overflow:hidden;max-width:500px;\' ng-model="ship.hullConfig"\n' +
+    '        ng-options="config.display for config in hullConfigurations">\n' +
+    '</select>\n' +
+    '\n' +
     '<h2>Starship Hull Class</h2>\n' +
     '<p class="explainer">\n' +
     '\n' +
@@ -563,18 +540,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <td ng-bind="h.INITIATIVE"></td>\n' +
     '    </tr>\n' +
     '    </tbody>\n' +
-    '</table>\n' +
-    '\n' +
-    '<h3>Hull Configuration</h3>\n' +
-    '<p class="explainer">\n' +
-    '    Also select an (optional) hull configuration. There are as many different vessel types as there are stars in the\n' +
-    '    sky. The following list is a summary of some common classifications listed in approximate typical size order. Each\n' +
-    '    configuration grants the ship one exploit.\n' +
-    '</p>\n' +
-    '<select style=\'overflow:hidden;max-width:500px;\' ng-model="ship.hullConfig"\n' +
-    '        ng-options="config.display for config in hullConfigurations">\n' +
-    '\n' +
-    '</select>');
+    '</table>');
 }]);
 })();
 
@@ -597,7 +563,104 @@ try {
   module = angular.module('starshipPartials', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/sensors.html',
+    '<h2>Sensor Systems</h2>\n' +
+    '<p class="explainer">\n' +
+    '\n' +
+    '    A sensor array is a collection of sensors and sub processors designed to gather and collate information. They include navigational and combat sensors, as well as equipment which measures and records the environment capable of detecting a wide range of phenomena. Sensors also include communications equipment, and are used for offensive electronic warfare.</p>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <td></td>\n' +
+    '        <td>Sensor Systems</td>\n' +
+    '        <td>Cost</td>\n' +
+    '        <td>Size</td>\n' +
+    '        <td>Space</td>\n' +
+    '        <td>Range</td>\n' +
+    '        <td>Range Inc</td>\n' +
+    '        <td>DEFENSE</td>\n' +
+    '        <td>Checks</td>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="s in sensors">\n' +
+    '        <td><input type="radio" ng-model="ship.sensor" ng-value="s"></td>\n' +
+    '        <td ng-bind="s[\'Sensor Systems\']"></td>\n' +
+    '        <td ng-bind="s.Cost"></td>\n' +
+    '        <td ng-bind="s.Size"></td>\n' +
+    '        <td ng-bind="s.Space"></td>\n' +
+    '        <td ng-bind="s.Range"></td>\n' +
+    '        <td ng-bind="s[\'Range Inc\']"></td>\n' +
+    '        <td ng-bind="s.DEFENSE"></td>\n' +
+    '        <td ng-bind="s.Checks"></td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/partials/shields.html',
+    '<h2>Your Point Defenses</h2>\n' +
+    '<p class="explainer">\n' +
+    '    Point defenses are close-in weaponry batteries and active protection systems which automatically detect, track, and destroy incoming missiles and fighter craft. They are ineffective against energy weapons such as lasers and distruptors, but very effective against torpedoes. Unlike shields and armor, point defense batteries do not grant a SOAK bonus; instead they provide a DEFENSE bonus against missile weapons (but not energy weapons).\n' +
+    '</p>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Amount</th>\n' +
+    '        <th>Name</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[PKEY]">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(PKEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{pointDefensesHash[name].Space}}</td>\n' +
+    '        <td>{{pointDefensesHash[name].CPU}}</td>\n' +
+    '        <td>{{pointDefensesHash[name].Cost}}</td>\n' +
+    '        <td>{{pointDefensesHash[name].DEFENSE}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="7" class="text-center">No point defenses selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="c in pointDefenses">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(PKEY, c[PKEY])">+</button></td>\n' +
+    '        <td>{{c[\'Point Defense\']}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.DEFENSE}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
     '<h2>Deflector Shields</h2>\n' +
     '<p class="explainer">\n' +
     '    Deflector shields (also referred to as screens or force-fields) are a technology devised to protect ships, stations, and sometimes even planets from damage. A deflector shield is a (usually invisible) field projected around an object which disperses or deflects energy and projectiles. The shields may use various energy types to create the fields – magnetic fields, gravitons, and so on – but most have much the same effect. Shields are not typically raised at all times (although navigational shields stay active permanently; larger shields have a lower navigational power level which is used during normal travel). Shield capacity is directly proportional to the power generated divided by the size of the area to be protected. Earlier shields typically project an elliptical field around the object to be protected, while more advanced versions conform to the contours of the ship within a few feet or so.</p>\n' +
@@ -655,60 +718,6 @@ module.run(['$templateCache', function($templateCache) {
     '        <td>{{c.Power}}</td>\n' +
     '    </tr>\n' +
     '    </tbody>\n' +
-    '</table>\n' +
-    '\n' +
-    '<h3>Your Point Defenses</h3>\n' +
-    '<p class="explainer">\n' +
-    '    Point defenses are close-in weaponry batteries and active protection systems which automatically detect, track, and destroy incoming missiles and fighter craft. They are ineffective against energy weapons such as lasers and distruptors, but very effective against torpedoes. Unlike shields and armor, point defense batteries do not grant a SOAK bonus; instead they provide a DEFENSE bonus against missile weapons (but not energy weapons).\n' +
-    '</p>\n' +
-    '<table class="table table-striped">\n' +
-    '    <thead>\n' +
-    '    <tr>\n' +
-    '        <th></th>\n' +
-    '        <th>Amount</th>\n' +
-    '        <th>Name</th>\n' +
-    '        <th>Space</th>\n' +
-    '        <th>CPU</th>\n' +
-    '        <th>Cost</th>\n' +
-    '        <th>DEFENSE</th>\n' +
-    '    </tr>\n' +
-    '    </thead>\n' +
-    '    <tbody>\n' +
-    '    <tr ng-repeat="(name, count) in ship[PKEY]">\n' +
-    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(PKEY, name)">-</button></td>\n' +
-    '        <td ng-bind="count"></td>\n' +
-    '        <td ng-bind="name"></td>\n' +
-    '        <td>{{pointDefensesHash[name].Space}}</td>\n' +
-    '        <td>{{pointDefensesHash[name].CPU}}</td>\n' +
-    '        <td>{{pointDefensesHash[name].Cost}}</td>\n' +
-    '        <td>{{pointDefensesHash[name].DEFENSE}}</td>\n' +
-    '    </tr>\n' +
-    '    <tr ng-if="isEmpty(KEY)">\n' +
-    '        <td colspan="7" class="text-center">No point defenses selected.</td>\n' +
-    '    </tr>\n' +
-    '    </tbody>\n' +
-    '</table>\n' +
-    '\n' +
-    '<table class="table table-striped">\n' +
-    '    <thead>\n' +
-    '    <tr>\n' +
-    '        <th></th>\n' +
-    '        <th>Space</th>\n' +
-    '        <th>CPU</th>\n' +
-    '        <th>Cost</th>\n' +
-    '        <th>DEFENSE</th>\n' +
-    '    </tr>\n' +
-    '    </thead>\n' +
-    '    <tbody>\n' +
-    '    <tr ng-repeat="c in pointDefenses">\n' +
-    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(PKEY, c[PKEY])">+</button></td>\n' +
-    '        <td>{{c[\'Point Defense\']}}</td>\n' +
-    '        <td>{{c.Space}}</td>\n' +
-    '        <td>{{c.CPU}}</td>\n' +
-    '        <td>{{c.Cost}}</td>\n' +
-    '        <td>{{c.DEFENSE}}</td>\n' +
-    '    </tr>\n' +
-    '    </tbody>\n' +
     '</table>');
 }]);
 })();
@@ -744,11 +753,11 @@ module.run(['$templateCache', function($templateCache) {
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Weight</span>\n' +
-    '                    <span ng-bind="ship.hull.Tonnage"></span> tons;\n' +
+    '                    <span ng-bind="calculateWeight(ship.hull.Tonnage)"></span> tons;\n' +
     '                    <span style="font-weight: bold;">Cargo Units</span>\n' +
     '                    <span ng-bind="currentSpace()"></span> (<span ng-bind="maxSpace() - currentSpace()"></span> available)<br>\n' +
     '                    <span style="font-weight: bold;">Hull Class </span>\n' +
-    '                    <span ng-bind=\'ship.hull.Class\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE"></span>)<br>\n' +
+    '                    <span ng-bind=\'ship.hull.Class || "none"\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE || 0"></span>)<br>\n' +
     '                    <span style="font-weight: bold;">Hull Configuration </span>\n' +
     '                    <span ng-bind=\'ship.hullConfig.display\'></span>\n' +
     '                </td>\n' +
@@ -756,11 +765,11 @@ module.run(['$templateCache', function($templateCache) {
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Crew</span>\n' +
-    '                    <span ng-bind="ship.hull.Crew"></span> (cost <span ng-bind=""></span>Cr/m);\n' +
+    '                    <span ng-bind="ship.hull.Crew || 0"></span> (cost <span ng-bind=""></span>Cr/m);\n' +
     '                    <span style="font-weight: bold;">Troops</span>\n' +
-    '                    <span ng-bind="ship.Crew.Troops"></span>; Passengers\n' +
-    '                    <span ng-bind="ship.Crew[\'Standard Passengers\'] + ship.Crew[\'Luxury Passengers\']"></span>\n' +
-    '                    (<span ng-bind="ship.Crew[\'Standard Passengers\']"></span> standard, <span ng-bind="ship.Crew[\'Luxury Passengers\']"></span> luxury)\n' +
+    '                    <span ng-bind="ship.Crew.Troops || 0"></span>; Passengers\n' +
+    '                    <span ng-bind="ship.Crew[\'Standard Passengers\'] + ship.Crew[\'Luxury Passengers\'] || 0"></span>\n' +
+    '                    (<span ng-bind="ship.Crew[\'Standard Passengers\'] || 0"></span> standard, <span ng-bind="ship.Crew[\'Luxury Passengers\'] || 0"></span> luxury)\n' +
     '                </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
@@ -782,8 +791,8 @@ module.run(['$templateCache', function($templateCache) {
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Sensors</span>\n' +
-    '                    <span ng-bind="ship.sensor[\'Sensor Systems\']"></span>\n' +
-    '                    (range <span ng-bind="ship.sensor.Range"></span>; check <span ng-bind="ship.sensor.Checks"></span>)\n' +
+    '                    <span ng-bind="ship.sensor[\'Sensor Systems\'] || \'none\'"></span>\n' +
+    '                    (range <span ng-bind="ship.sensor.Range || 0"></span>; check <span ng-bind="ship.sensor.Checks || 0"></span>)\n' +
     '                </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
@@ -797,7 +806,7 @@ module.run(['$templateCache', function($templateCache) {
     '                      <span ng-repeat="(name, quantity) in ship[\'Sub-luminal Engine\']">\n' +
     '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
     '                        ( each power: <span ng-bind="sublHash[name][\'Power\']"></span> ;\n' +
-    '                        SPEED: <span ng-bind="calculateSublSpeed(name, quantity)"></span> ;\n' +
+    '                        SPEED: <span ng-bind="calculateSublSpeed(name, quantity) | number:1"></span> ;\n' +
     '                        fuel efficiency: <span ng-bind="sublHash[name][\'Fuel Eff\']"></span> )\n' +
     '                    </span>\n' +
     '                </td>\n' +
@@ -808,7 +817,7 @@ module.run(['$templateCache', function($templateCache) {
     '                      <span ng-repeat="(name, quantity) in ship[\'FTL Engine\']">\n' +
     '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
     '                        ( each power: <span ng-bind="ftlHash[name][\'Power\']"></span> ;\n' +
-    '                        FTL: <span ng-bind="calculateFtl(name, quantity)"></span> ;\n' +
+    '                        FTL: <span ng-bind="calculateFtl(name, quantity) | number:1"></span> ;\n' +
     '                        fuel efficiency: <span ng-bind="ftlHash[name][\'Fuel Eff\']"></span> )\n' +
     '                    </span>\n' +
     '                </td>\n' +
@@ -825,7 +834,7 @@ module.run(['$templateCache', function($templateCache) {
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Superstructure</span>\n' +
-    '                    <span ng-bind="calculateSuperstructure()"></span>\n' +
+    '                    <span ng-bind="calculateSuperstructure() || \'none\'"></span>\n' +
     '                    <span style="font-weight: bold;">DEFENSE</span>\n' +
     '                    <span ng-bind="calculateDefense()"></span>\n' +
     '                    <span style="font-weight: bold;">ELECTRONIC DEFENSE</span>\n' +
@@ -835,7 +844,7 @@ module.run(['$templateCache', function($templateCache) {
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Armor</span>\n' +
-    '                    <span ng-bind="presentArmor()"></span>\n' +
+    '                    <span ng-bind="presentArmor() || \'none\'"></span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
@@ -873,7 +882,7 @@ module.run(['$templateCache', function($templateCache) {
     '            <tr>\n' +
     '                <td colspan="10" sdnum="2057;0;0" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Luxury</span>\n' +
-    '                    <span ng-bind="calculateLuxury()"></span>\n' +
+    '                    <span ng-bind="calculateLuxury() || \'none\'"></span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
