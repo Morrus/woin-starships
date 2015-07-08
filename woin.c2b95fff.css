@@ -436,5 +436,18 @@ label[for='toggle-all'] {
   text-align: right;
   font-weight: bold; }
 
+.small-input {
+  width: 80px !important; }
 
-/*# sourceMappingURL=maps/woin.c8526cd2.css.map */
+.input-cell {
+  width: 130px; }
+
+.input-group-addon.btn.btn-primary {
+  height: 34px;
+  text-align: center;
+  padding: 6px 18px 6px 12px !important;
+  background-color: #337ab7;
+  color: #fff; }
+
+
+/*# sourceMappingURL=maps/woin.c2b95fff.css.map */

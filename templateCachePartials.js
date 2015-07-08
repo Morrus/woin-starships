@@ -150,7 +150,12 @@ module.run(['$templateCache', function($templateCache) {
     '    </thead>\n' +
     '    <tbody>\n' +
     '    <tr ng-repeat="(name, count) in ship[\'Crew\']">\n' +
-    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td>\n' +
+    '            <div class="input-group">\n' +
+    '                <input type="number" class="form-control small-input" ng-init="crewValueRemoveHash[name] = 1" ng-model="crewValueRemoveHash[name]" />\n' +
+    '                <button type="button" class="input-group-addon btn btn-primary" ng-click="decrementItem(KEY, name, crewValueRemoveHash[name])">-</button>\n' +
+    '            </div>\n' +
+    '        </td>\n' +
     '        <td ng-bind="count"></td>\n' +
     '        <td ng-bind="name"></td>\n' +
     '        <td ng-bind="crewHash[name].Space"></td>\n' +
@@ -173,7 +178,12 @@ module.run(['$templateCache', function($templateCache) {
     '    </thead>\n' +
     '    <tbody>\n' +
     '    <tr ng-repeat="p in passengerOptions">\n' +
-    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, p[\'Type\'])">+</button></td>\n' +
+    '        <td>\n' +
+    '            <div class="input-group">\n' +
+    '                <input type="number" class="form-control small-input" ng-init="crewValueAddHash[p.Type] = 1" ng-model="crewValueAddHash[p.Type]" />\n' +
+    '                <button type="button" class="input-group-addon btn btn-primary" ng-click="incrementItem(KEY, p.Type, crewValueAddHash[p.Type])">+</button>\n' +
+    '            </div>\n' +
+    '        </td>\n' +
     '        <td ng-bind="p.Type"></td>\n' +
     '        <td ng-bind="p.Space"></td>\n' +
     '        <td ng-bind="p.Cost"></td>\n' +
@@ -215,6 +225,8 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/partials/facilities.html',
+    '{{crewValueAddHash}} {{crewValueRemoveHash}}\n' +
+    '\n' +
     '<h2>Facilities</h2>\n' +
     '<p class="explainer">\n' +
     '    They A basic ship comes with a bridge, dormitory accommodations for crew and one cabin for the captain. Ships of smaller than class I do not include accommodations, and have a cockpit instead of a bridge.\n' +
@@ -225,7 +237,8 @@ module.run(['$templateCache', function($templateCache) {
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '    <tr>\n' +
-    '        <th></th>\n' +
+    '        <th class="input-cell"></th>\n' +
+    '        <th>Quantity</th>\n' +
     '        <th>Customization</th>\n' +
     '        <th>Cost/crew</th>\n' +
     '        <th>Luxury/crew</th>\n' +
@@ -236,7 +249,12 @@ module.run(['$templateCache', function($templateCache) {
     '    </thead>\n' +
     '    <tbody>\n' +
     '    <tr ng-repeat="(name, count) in ship.Facilities">\n' +
-    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td>\n' +
+    '            <div class="input-group">\n' +
+    '                <input type="number" class="form-control small-input" ng-init="facilitiesValueRemoveHash[name] = 1" ng-model="facilitiesValueRemoveHash[name]" />\n' +
+    '                <button type="button" class="input-group-addon btn btn-primary" ng-click="decrementItem(KEY, name, facilitiesValueRemoveHash[name])">-</button>\n' +
+    '            </div>\n' +
+    '        </td>\n' +
     '        <td ng-bind="count"></td>\n' +
     '        <td ng-bind="name"></td>\n' +
     '        <td>{{facilitiesHash[name][\'Cost/crew\']}}</td>\n' +
@@ -254,7 +272,7 @@ module.run(['$templateCache', function($templateCache) {
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '    <tr>\n' +
-    '        <th></th>\n' +
+    '        <th class="input-cell"></th>\n' +
     '        <th>Customization</th>\n' +
     '        <th>Cost/crew</th>\n' +
     '        <th>Luxury/crew</th>\n' +
@@ -265,7 +283,12 @@ module.run(['$templateCache', function($templateCache) {
     '    </thead>\n' +
     '    <tbody>\n' +
     '    <tr ng-repeat="c in facilities">\n' +
-    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Customization)">+</button></td>\n' +
+    '        <td>\n' +
+    '            <div class="input-group">\n' +
+    '                <input type="number" class="form-control small-input" ng-init="facilitiesValueAddHash[c.Customization] = 1" ng-model="facilitiesValueAddHash[c.Customization]" />\n' +
+    '                <button type="button" class="input-group-addon btn btn-primary" ng-click="incrementItem(KEY, c.Customization, facilitiesValueAddHash[c.Customization])">+</button>\n' +
+    '            </div>\n' +
+    '        </td>\n' +
     '        <td>{{c.Customization}}</td>\n' +
     '        <td>{{c[\'Cost/crew\']}}</td>\n' +
     '        <td>{{c[\'Luxury/crew\']}}</td>\n' +
