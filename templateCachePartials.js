@@ -536,7 +536,7 @@ module.run(['$templateCache', function($templateCache) {
     '    configuration grants the ship one exploit.\n' +
     '</p>\n' +
     '<select style=\'overflow:hidden;max-width:500px;\' ng-model="ship.hullConfig"\n' +
-    '        ng-options="config.display for config in hullConfigurations">\n' +
+    '        ng-options="config.display disable when isHullConfigDisabled(config) for config in hullConfigurations">\n' +
     '</select>\n' +
     '\n' +
     '<h2>Starship Hull Class</h2>\n' +
