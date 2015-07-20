@@ -506,6 +506,16 @@ module.run(['$templateCache', function($templateCache) {
     '        <td>{{c.CPU}}</td>\n' +
     '        <td>{{c.Notes}}</td>\n' +
     '    </tr>\n' +
+    '    <tr><td colspan="7" class="text-center"><strong>Cloaking Systems</strong></td></tr>\n' +
+    '    <tr ng-repeat="c in systems.cloaking">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)" ng-disabled="notValidHull(c.Notes)">+</button></td>\n' +
+    '        <td>{{c.Item}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.Size}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Notes}}</td>\n' +
+    '    </tr>\n' +
     '    </tbody>\n' +
     '</table>');
 }]);
@@ -552,7 +562,7 @@ module.run(['$templateCache', function($templateCache) {
     '    </thead>\n' +
     '    <tbody>\n' +
     '    <tr ng-repeat="h in hulls">\n' +
-    '        <td><input type="radio" ng-model="ship.hull" ng-value="h"></td>\n' +
+    '        <td><input type="radio" ng-model="ship.hull" ng-value="h" ng-change="clearCloaking()"></td>\n' +
     '        <td ng-bind="h.Class"></td>\n' +
     '        <td ng-bind="h.Tonnage"></td>\n' +
     '        <td ng-bind="h.Cost"></td>\n' +
@@ -753,6 +763,8 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/partials/ship.html',
+    '{{ship}}\n' +
+    '\n' +
     '<div class="row">\n' +
     '    <div class="col-md-8">\n' +
     '        <table class=\'centered\' cols="10" frame="void" rules="none" border="0" cellspacing="0">\n' +
