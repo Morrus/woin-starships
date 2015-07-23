@@ -444,16 +444,6 @@ module.run(['$templateCache', function($templateCache) {
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
-    '    <tr><td colspan="7" class="text-center"><strong>Hangars</strong></td></tr>\n' +
-    '    <tr ng-repeat="c in systems.hangars">\n' +
-    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)">+</button></td>\n' +
-    '        <td>{{c.Item}}</td>\n' +
-    '        <td>{{c.Space}}</td>\n' +
-    '        <td>{{c.Size}}</td>\n' +
-    '        <td>{{c.Cost}}</td>\n' +
-    '        <td>{{c.CPU}}</td>\n' +
-    '        <td>{{c.Notes}}</td>\n' +
-    '    </tr>\n' +
     '    <tr><td colspan="7" class="text-center"><strong>Fueling</strong></td></tr>\n' +
     '    <tr ng-repeat="c in systems.fueling">\n' +
     '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)">+</button></td>\n' +
@@ -505,7 +495,80 @@ module.run(['$templateCache', function($templateCache) {
     '        <td>{{c.Notes}}</td>\n' +
     '    </tr>\n' +
     '    </tbody>\n' +
-    '</table>');
+    '</table>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/hangars.html',
+    '<h2>Hangars</h2>\n' +
+    '<p class="explainer">\n' +
+    '  A small shuttlebay or fighter bay is able to accommodate one class 0-III vessel; the bay\'s size correlates to its shuttle capacity. Some larger ships have multiple shuttle bays if they need to carry more than 64 shuttles or fighters. A shuttlebay comes already stocked with fighters or shuttles as part of the price. Launching a fighter squadron or a shuttle requires one action.\n' +
+    '</p>\n' +
+    '<h3>Your Hangars</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Count</th>\n' +
+    '        <th>Item</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship.Hangars">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{hangarHash[name].Space}}</td>\n' +
+    '        <td>{{hangarHash[name].Size}}</td>\n' +
+    '        <td>{{hangarHash[name].Cost}}</td>\n' +
+    '        <td>{{hangarHash[name].CPU}}</td>\n' +
+    '        <td>{{hangarHash[name].Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="7" class="text-center">No Hangars selected</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr colspan="7">\n' +
+    '        <th></th>\n' +
+    '        <th>Item</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '      <tr><td colspan="7" class="text-center"><strong>Hangars</strong></td></tr>\n' +
+    '      <tr ng-repeat="c in hangars">\n' +
+    '          <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)">+</button></td>\n' +
+    '          <td>{{c.Item}}</td>\n' +
+    '          <td>{{c.Space}}</td>\n' +
+    '          <td>{{c.Size}}</td>\n' +
+    '          <td>{{c.Cost}}</td>\n' +
+    '          <td>{{c.CPU}}</td>\n' +
+    '          <td>{{c.Notes}}</td>\n' +
+    '      </tr>\n' +
+    '  </tbody>\n' +
+    '</table>\n' +
+    '');
 }]);
 })();
 
