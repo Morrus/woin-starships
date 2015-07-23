@@ -141,11 +141,11 @@ module.run(['$templateCache', function($templateCache) {
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '    <tr>\n' +
-    '        <td></td>\n' +
-    '        <td>Quantity</td>\n' +
-    '        <td>Type</td>\n' +
-    '        <td>Space</td>\n' +
-    '        <td>Cost</td>\n' +
+    '        <th></th>\n' +
+    '        <th>Quantity</th>\n' +
+    '        <th>Type</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Cost</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
@@ -170,10 +170,10 @@ module.run(['$templateCache', function($templateCache) {
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '    <tr>\n' +
-    '        <td>Select</td>\n' +
-    '        <td>Type</td>\n' +
-    '        <td>Space</td>\n' +
-    '        <td>Cost</td>\n' +
+    '        <th>Select</th>\n' +
+    '        <th>Type</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Cost</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
@@ -190,18 +190,6 @@ module.run(['$templateCache', function($templateCache) {
     '    </tr>\n' +
     '    </tbody>\n' +
     '</table>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('starshipPartials');
-} catch (e) {
-  module = angular.module('starshipPartials', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/partials/download.html',
-    '');
 }]);
 })();
 
@@ -536,7 +524,7 @@ module.run(['$templateCache', function($templateCache) {
     '    configuration grants the ship one exploit.\n' +
     '</p>\n' +
     '<select style=\'overflow:hidden;max-width:500px;\' ng-model="ship.hullConfig"\n' +
-    '        ng-options="config.display disable when isHullConfigDisabled(config) for config in hullConfigurations">\n' +
+    '        ng-options="config.display for config in hullConfigurations">\n' +
     '</select>\n' +
     '\n' +
     '<h2>Starship Hull Class</h2>\n' +
@@ -549,15 +537,15 @@ module.run(['$templateCache', function($templateCache) {
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '    <tr>\n' +
-    '        <td>Select</td>\n' +
-    '        <td>Class</td>\n' +
-    '        <td>Tonnage</td>\n' +
-    '        <td>Cost</td>\n' +
-    '        <td>Crew</td>\n' +
-    '        <td>Max CU</td>\n' +
-    '        <td>DEFENSE</td>\n' +
-    '        <td>Fuel</td>\n' +
-    '        <td>Initiative</td>\n' +
+    '        <th>Select</th>\n' +
+    '        <th>Class</th>\n' +
+    '        <th>Tonnage</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Crew</th>\n' +
+    '        <th>Max CU</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '        <th>Fuel</th>\n' +
+    '        <th>Initiative</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
@@ -573,7 +561,8 @@ module.run(['$templateCache', function($templateCache) {
     '        <td ng-bind="h.INITIATIVE"></td>\n' +
     '    </tr>\n' +
     '    </tbody>\n' +
-    '</table>');
+    '</table>\n' +
+    '');
 }]);
 })();
 
@@ -604,15 +593,15 @@ module.run(['$templateCache', function($templateCache) {
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '    <tr>\n' +
-    '        <td></td>\n' +
-    '        <td>Sensor Systems</td>\n' +
-    '        <td>Cost</td>\n' +
-    '        <td>Size</td>\n' +
-    '        <td>Space</td>\n' +
-    '        <td>Range</td>\n' +
-    '        <td>Range Inc</td>\n' +
-    '        <td>DEFENSE</td>\n' +
-    '        <td>Checks</td>\n' +
+    '        <th></th>\n' +
+    '        <th>Sensor Systems</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Range</th>\n' +
+    '        <th>Range Inc</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '        <th>Checks</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
@@ -783,7 +772,7 @@ module.run(['$templateCache', function($templateCache) {
     '            <tbody>\n' +
     '            <tr>\n' +
     '                <td colspan="10" align="center" height="23" bgcolor="#cccccc"\n' +
-    '                    valign="bottom" width="650"><b ><font size="4" ng-bind="ship.name"></font></b></td>\n' +
+    '                    valign="bottom" width="650">{{ship.name}} Class {{ship.hull.Class}} {{ship.hullConfig.name}}</b></td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
@@ -971,10 +960,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/partials/starship-index.html',
     '<div class="row">\n' +
-    '    <h3 style="text-align:center"> CPU: {{ currentCpu() }} ({{maxCpu()}} Max)\n' +
-    '         Cargo Units: {{ currentSpace() }} ({{ maxSpace() - currentSpace() }} available)\n' +
-    '         Credits Spent: {{ totalCost() }}\n' +
-    '    </h3>\n' +
     '    <div class="col-md-3">\n' +
     '        <tabs data="tabs" vertical="true" type="pills"></tabs>\n' +
     '    </div>\n' +
@@ -1077,12 +1062,12 @@ module.run(['$templateCache', function($templateCache) {
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '    <tr>\n' +
-    '        <td></td>\n' +
-    '        <td>Quantity</td>\n' +
-    '        <td>Type</td>\n' +
-    '        <td>Space</td>\n' +
-    '        <td>Cost</td>\n' +
-    '        <td>Notes</td>\n' +
+    '        <th></th>\n' +
+    '        <th>Quantity</th>\n' +
+    '        <th>Type</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Notes</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
@@ -1103,11 +1088,11 @@ module.run(['$templateCache', function($templateCache) {
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '    <tr>\n' +
-    '        <td>Select</td>\n' +
-    '        <td>Type</td>\n' +
-    '        <td>Space</td>\n' +
-    '        <td>Cost</td>\n' +
-    '        <td>Notes</td>\n' +
+    '        <th>Select</th>\n' +
+    '        <th>Type</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Notes</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
