@@ -247,7 +247,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <td ng-bind="name"></td>\n' +
     '        <td>{{facilitiesHash[name][\'Cost/crew\']}}</td>\n' +
     '        <td>{{facilitiesHash[name][\'Luxury/crew\']}}</td>\n' +
-    '        <td>{{facilitiesHash[name][\'Space (CU)/crew\']}}</td>\n' +
+    '        <td>{{facilitiesHash[name][\'Space/crew\']}}</td>\n' +
     '        <td>{{facilitiesHash[name].Recommended}}</td>\n' +
     '        <td>{{facilitiesHash[name].Notes}}</td>\n' +
     '    </tr>\n' +
@@ -264,7 +264,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <th>Customization</th>\n' +
     '        <th>Cost/crew</th>\n' +
     '        <th>Luxury/crew</th>\n' +
-    '        <th>Space (CU)/crew</th>\n' +
+    '        <th>Space/crew</th>\n' +
     '        <th>Recommended</th>\n' +
     '        <th>Notes</th>\n' +
     '    </tr>\n' +
@@ -280,12 +280,13 @@ module.run(['$templateCache', function($templateCache) {
     '        <td>{{c.Customization}}</td>\n' +
     '        <td>{{c[\'Cost/crew\']}}</td>\n' +
     '        <td>{{c[\'Luxury/crew\']}}</td>\n' +
-    '        <td>{{c[\'Space (CU)/crew\']}}</td>\n' +
+    '        <td>{{c[\'Space/crew\']}}</td>\n' +
     '        <td>{{c.Recommended}}</td>\n' +
     '        <td>{{c.Notes}}</td>\n' +
     '    </tr>\n' +
     '    </tbody>\n' +
-    '</table>');
+    '</table>\n' +
+    '');
 }]);
 })();
 
@@ -1010,7 +1011,8 @@ module.run(['$templateCache', function($templateCache) {
     '        </div>\n' +
     '    </div>\n' +
     '\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 })();
 
