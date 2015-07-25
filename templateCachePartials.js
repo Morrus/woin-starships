@@ -213,8 +213,6 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/partials/facilities.html',
-    '{{crewValueAddHash}} {{crewValueRemoveHash}}\n' +
-    '\n' +
     '<h2>Facilities</h2>\n' +
     '<p class="explainer">\n' +
     '    They A basic ship comes with a bridge, dormitory accommodations for crew and one cabin for the captain. Ships of smaller than class I do not include accommodations, and have a cockpit instead of a bridge.\n' +
@@ -1011,8 +1009,7 @@ module.run(['$templateCache', function($templateCache) {
     '        </div>\n' +
     '    </div>\n' +
     '\n' +
-    '</div>\n' +
-    '');
+    '</div>');
 }]);
 })();
 
