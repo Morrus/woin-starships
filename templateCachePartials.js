@@ -358,10 +358,41 @@ module.run(['$templateCache', function($templateCache) {
     '    </tbody>\n' +
     '</table>\n' +
     '\n' +
+    '<h3>Your Backup Engines</h3>\n' +
     '<table class="table table-striped">\n' +
     '    <thead>\n' +
     '        <tr>\n' +
     '            <th></th>\n' +
+    '            <th>Count</th>\n' +
+    '            <th>FTL Engine</th>\n' +
+    '            <th>Cost</th>\n' +
+    '            <th>Size</th>\n' +
+    '            <th>CPU</th>\n' +
+    '            <th>Space</th>\n' +
+    '            <th>Power</th>\n' +
+    '            <th>Fuel Eff</th>\n' +
+    '        </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[BKEY]">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(BKEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{ftlHash[name].Cost}}</td>\n' +
+    '        <td>{{ftlHash[name].Size}}</td>\n' +
+    '        <td>{{ftlHash[name].CPU}}</td>\n' +
+    '        <td>{{ftlHash[name].Space}}</td>\n' +
+    '        <td>{{ftlHash[name].Power}}</td>\n' +
+    '        <td>{{ftlHash[name][\'Fuel Eff\']}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '        <tr>\n' +
+    '            <th>Add</th>\n' +
+    '            <th>Backup</th>\n' +
     '            <th>FTL Engine</th>\n' +
     '            <th>Cost</th>\n' +
     '            <th>Size</th>\n' +
@@ -373,7 +404,14 @@ module.run(['$templateCache', function($templateCache) {
     '    </thead>\n' +
     '    <tbody>\n' +
     '    <tr ng-repeat="item in ftl">\n' +
-    '        <td><button type="button" class="btn btn-primary" ng-click="incrementOneItem(KEY, item[\'FTL Engine\'])">+</button></td>\n' +
+    '        <td><button\n' +
+    '                type="button"\n' +
+    '                class="btn btn-primary"\n' +
+    '                ng-disabled="!hasThisItem(KEY, item[\'FTL Engine\'])"\n' +
+    '                ng-click="incrementOneItem(KEY, item[\'FTL Engine\'])">\n' +
+    '            +</button>\n' +
+    '        </td>\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(BKEY, item[\'FTL Engine\'])">+</button></td>\n' +
     '        <td>{{item[\'FTL Engine\']}}</td>\n' +
     '        <td>{{item.Cost}}</td>\n' +
     '        <td>{{item.Size}}</td>\n' +
@@ -585,8 +623,9 @@ module.run(['$templateCache', function($templateCache) {
     '    sky. The following list is a summary of some common classifications listed in approximate typical size order. Each\n' +
     '    configuration grants the ship one exploit.\n' +
     '</p>\n' +
-    '<select style=\'overflow:hidden;max-width:500px;\' ng-model="ship.hullConfig"\n' +
-    '        ng-options="config.display for config in hullConfigurations">\n' +
+    '<select style=\'overflow:hidden;max-width:500px;\'\n' +
+    '        ng-model="ship.hullConfig"\n' +
+    '        ng-options="presentType(config) for config in hullConfigurations">\n' +
     '</select>\n' +
     '\n' +
     '<h2>Starship Hull Class</h2>\n' +
@@ -841,11 +880,11 @@ module.run(['$templateCache', function($templateCache) {
     '                    <span style="font-weight: bold;">Weight</span>\n' +
     '                    <span ng-bind="calculateWeight(ship.hull.Tonnage)"></span> tons;\n' +
     '                    <span style="font-weight: bold;">Cargo Units</span>\n' +
-    '                    <span ng-bind="currentSpace()"></span> (<span ng-bind="maxSpace() - currentSpace()"></span> available)<br>\n' +
+    '                    <span ng-bind="presentCargo()"></span>\n' +
     '                    <span style="font-weight: bold;">Hull Class </span>\n' +
     '                    <span ng-bind=\'ship.hull.Class || "none"\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE || 0"></span>)<br>\n' +
     '                    <span style="font-weight: bold;">Hull Configuration </span>\n' +
-    '                    <span ng-bind=\'ship.hullConfig.display\'></span>\n' +
+    '                    <span ng-bind=\'presentType(ship.hullConfig)\'></span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
@@ -901,6 +940,12 @@ module.run(['$templateCache', function($templateCache) {
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">FTL</span>\n' +
     '                      <span ng-repeat="(name, quantity) in ship[\'FTL Engine\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        ( each power: <span ng-bind="ftlHash[name][\'Power\']"></span> ;\n' +
+    '                        FTL: <span ng-bind="calculateFtl(name, quantity) | number:1"></span> ;\n' +
+    '                        fuel efficiency: <span ng-bind="ftlHash[name][\'Fuel Eff\']"></span> )\n' +
+    '                    <span style="font-weight: bold;">Backup FTL</span>\n' +
+    '                     <span ng-repeat="(name, quantity) in ship[\'Backup FTL Engine\']">\n' +
     '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
     '                        ( each power: <span ng-bind="ftlHash[name][\'Power\']"></span> ;\n' +
     '                        FTL: <span ng-bind="calculateFtl(name, quantity) | number:1"></span> ;\n' +
