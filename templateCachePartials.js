@@ -228,7 +228,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <th>Customization</th>\n' +
     '        <th>Cost/crew</th>\n' +
     '        <th>Luxury/crew</th>\n' +
-    '        <th>Space (CU)/crew</th>\n' +
+    '        <th>Space/crew</th>\n' +
     '        <th>Recommended</th>\n' +
     '        <th>Notes</th>\n' +
     '    </tr>\n' +
