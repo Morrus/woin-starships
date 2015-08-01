@@ -873,7 +873,7 @@ module.run(['$templateCache', function($templateCache) {
     '            <tbody>\n' +
     '            <tr>\n' +
     '                <td colspan="10" align="center" height="23" bgcolor="#cccccc"\n' +
-    '                    valign="bottom" width="650">{{ship.name}} Class {{ship.hull.Class}} {{ship.hullConfig.name}}</b></td>\n' +
+    '                    valign="bottom" width="650">{{ship.name}} Class {{ship.hull.Class}} {{ship.hullConfig.Type}}</b></td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
@@ -944,6 +944,7 @@ module.run(['$templateCache', function($templateCache) {
     '                        ( each power: <span ng-bind="ftlHash[name][\'Power\']"></span> ;\n' +
     '                        FTL: <span ng-bind="calculateFtl(name, quantity) | number:1"></span> ;\n' +
     '                        fuel efficiency: <span ng-bind="ftlHash[name][\'Fuel Eff\']"></span> )\n' +
+    '                    <br>\n' +
     '                    <span style="font-weight: bold;">Backup FTL</span>\n' +
     '                     <span ng-repeat="(name, quantity) in ship[\'Backup FTL Engine\']">\n' +
     '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
@@ -1001,7 +1002,7 @@ module.run(['$templateCache', function($templateCache) {
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                     <span ng-repeat="(name, quantity) in ship[\'Weapon System\']">\n' +
     '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
-    '                        (range: <span ng-bind="weaponHash[name][\'Range\']"></span>;\n' +
+    '                        (range: <span ng-bind="calculateWeaponRange(name)"></span>;\n' +
     '                        damage: <span ng-bind="weaponHash[name][\'Damage\']"></span>;\n' +
     '                        attack: <span ng-bind="weaponHash[name][\'Attack\']"></span>)<br/>\n' +
     '                    </span>\n' +
@@ -1036,10 +1037,9 @@ module.run(['$templateCache', function($templateCache) {
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Shuttles</span>\n' +
-    '                    <span ng-repeat="(name, quantity) in ship[\'General\']">\n' +
-    '                        <span ng-if="isHangar(name)">\n' +
-    '                           <span ng-bind="quantity"></span>x <span ng-bind="name"></span> (<span ng-bind="getHangarQty(name)"></span>),\n' +
-    '                        </span>\n' +
+    '                    <span ng-repeat="(name, quantity) in ship[\'Hangars\']">\n' +
+    '                        repeat\n' +
+    '                       <span ng-bind="quantity"></span>x <span ng-bind="name"></span> (<span ng-bind="getHangarQty(name)"></span>),\n' +
     '                    </span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
