@@ -880,7 +880,7 @@ module.run(['$templateCache', function($templateCache) {
     '                    <span style="font-weight: bold;">Weight</span>\n' +
     '                    <span ng-bind="calculateWeight(ship.hull.Tonnage)"></span> tons;\n' +
     '                    <span style="font-weight: bold;">Cargo Units</span>\n' +
-    '                    <span ng-bind="presentCargo()"></span>\n' +
+    '                    <span ng-bind="currentSpace()"></span> (<span ng-bind="maxSpace() - currentSpace()"></span> available)<br>\n' +
     '                    <span style="font-weight: bold;">Hull Class </span>\n' +
     '                    <span ng-bind=\'ship.hull.Class || "none"\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE || 0"></span>)<br>\n' +
     '                    <span style="font-weight: bold;">Hull Configuration </span>\n' +
@@ -984,8 +984,8 @@ module.run(['$templateCache', function($templateCache) {
     '                    <span style="font-weight: bold;">Shields</span>\n' +
     '                     <span ng-repeat="(name, quantity) in ship[\'Deflector Shields\']">\n' +
     '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
-    '                        (power: <span ng-bind="deflectorHash[name][\'Power\']"></span>;\n' +
-    '                        SOAK: <span ng-bind="calculateSoak(deflectorHash[name][\'Power\'])"></span>)\n' +
+    '                        (power: <span ng-bind="deflectorHash[name][\'Power\'] * quantity"></span>;\n' +
+    '                        SOAK: <span ng-bind="calculateSoak(deflectorHash[name][\'Power\'], quantity)"></span>)\n' +
     '                    </span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
@@ -1038,8 +1038,7 @@ module.run(['$templateCache', function($templateCache) {
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Shuttles</span>\n' +
     '                    <span ng-repeat="(name, quantity) in ship[\'Hangars\']">\n' +
-    '                        repeat\n' +
-    '                       <span ng-bind="quantity"></span>x <span ng-bind="name"></span> (<span ng-bind="getHangarQty(name)"></span>),\n' +
+    '                       <span ng-bind="quantity"></span>x <span ng-bind="name"></span>,\n' +
     '                    </span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
