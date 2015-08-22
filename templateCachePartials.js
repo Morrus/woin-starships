@@ -873,7 +873,7 @@ module.run(['$templateCache', function($templateCache) {
     '            <tbody>\n' +
     '            <tr>\n' +
     '                <td colspan="10" align="center" height="23" bgcolor="#cccccc"\n' +
-    '                    valign="bottom" width="650">{{ship.name}} Class {{ship.hull.Class}} {{ship.hullConfig.Type}} Ship</b></td>\n' +
+    '                    valign="bottom" width="650">{{ship.name}} Class {{ship.hull.Class}} {{ship.hullConfig.Type}}</b></td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
@@ -884,14 +884,12 @@ module.run(['$templateCache', function($templateCache) {
     '                    <span style="font-weight: bold;">Hull Class </span>\n' +
     '                    <span ng-bind=\'ship.hull.Class || "none"\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE || 0"></span>)<br>\n' +
     '                    <span style="font-weight: bold;">Traits</span> {{ship.hullConfig.Traits}}<br>\n' +
-    '                    <span style="font-weight: bold;">Hull Configuration </span>\n' +
-    '                    <span ng-bind=\'presentType(ship.hullConfig)\'></span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Crew</span>\n' +
-    '                    <span ng-bind="calculateCrew() || 0"></span> (cost <span ng-bind=""></span>Cr/m);\n' +
+    '                    <span ng-bind="calculateCrew() || 0"></span> (cost <span ng-bind="(calculateCrew() * 200)"></span>Cr/m);\n' +
     '                    <span style="font-weight: bold;">Troops</span>\n' +
     '                    <span ng-bind="ship.Crew.Troops || 0"></span>; Passengers\n' +
     '                    <span ng-bind="ship.Crew[\'Standard Passengers\'] + ship.Crew[\'Luxury Passengers\'] || 0"></span>\n' +
