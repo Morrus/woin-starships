@@ -71,7 +71,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <td ng-bind="computerHash[name].Size"></td>\n' +
     '        <td ng-bind="computerHash[name].Space"></td>\n' +
     '        <td ng-bind="computerHash[name][\'Max FTL\']"></td>\n' +
-    '        <td ng-bind="computerHash[name][\'Max CPU\']"></td>\n' +
+    '        <td ng-bind="computerHash[name][\'CPU\']"></td>\n' +
     '        <td ng-bind="computerHash[name].Crew"></td>\n' +
     '        <td ng-bind="computerHash[name][\'Rng Inc\']"></td>\n' +
     '        <td ng-bind="computerHash[name].SOAK"></td>\n' +
@@ -109,7 +109,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <td ng-bind="c.Size"></td>\n' +
     '        <td ng-bind="c.Space"></td>\n' +
     '        <td ng-bind="c[\'Max FTL\']"></td>\n' +
-    '        <td ng-bind="c[\'Max CPU\']"></td>\n' +
+    '        <td ng-bind="c[\'CPU\']"></td>\n' +
     '        <td ng-bind="c.Crew"></td>\n' +
     '        <td ng-bind="c[\'Rng Inc\']"></td>\n' +
     '        <td ng-bind="c.SOAK"></td>\n' +
