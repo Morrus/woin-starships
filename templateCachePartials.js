@@ -742,8 +742,9 @@ module.run(['$templateCache', function($templateCache) {
     '        <th>Name</th>\n' +
     '        <th>Space</th>\n' +
     '        <th>CPU</th>\n' +
-    '        <th>Cost</th>\n' +
+    '        <th>Cost/point</th>\n' +
     '        <th>DEFENSE</th>\n' +
+    '        <th>Aura<th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
@@ -755,6 +756,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <td>{{pointDefensesHash[name].CPU}}</td>\n' +
     '        <td>{{pointDefensesHash[name].Cost}}</td>\n' +
     '        <td>{{pointDefensesHash[name].DEFENSE}}</td>\n' +
+    '        <td>{{pointDefensesHash[name].Aura}}</td>\n' +
     '    </tr>\n' +
     '    <tr ng-if="isEmpty(KEY)">\n' +
     '        <td colspan="7" class="text-center">No point defenses selected.</td>\n' +
@@ -766,20 +768,23 @@ module.run(['$templateCache', function($templateCache) {
     '    <thead>\n' +
     '    <tr>\n' +
     '        <th></th>\n' +
+    '        <th>Point Defense</th>\n' +
     '        <th>Space</th>\n' +
     '        <th>CPU</th>\n' +
-    '        <th>Cost</th>\n' +
+    '        <th>Cost/point</th>\n' +
     '        <th>DEFENSE</th>\n' +
+    '        <th>Aura</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
     '    <tr ng-repeat="c in pointDefenses">\n' +
     '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(PKEY, c[PKEY])">+</button></td>\n' +
-    '        <td>{{c[\'Point Defense\']}}</td>\n' +
+    '        <td>{{c[\'Point Defenses\']}}</td>\n' +
     '        <td>{{c.Space}}</td>\n' +
     '        <td>{{c.CPU}}</td>\n' +
     '        <td>{{c.Cost}}</td>\n' +
     '        <td>{{c.DEFENSE}}</td>\n' +
+    '        <td>{{c.Aura}}</td>\n' +
     '    </tr>\n' +
     '    </tbody>\n' +
     '</table>\n' +
@@ -991,7 +996,11 @@ module.run(['$templateCache', function($templateCache) {
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
     '                    <span style="font-weight: bold;">Point Defenses</span>\n' +
-    '                    <span ng-bind="ship[\'Point Defense\'][\'Point defenses\'] || \'-\'"></span>\n' +
+    '                     <span ng-repeat="(name, quantity) in ship[\'Point Defenses\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        (DEFENSE: <span ng-bind="pointDefensesHash[name][\'DEFENSE\'] * quantity"></span>)\n' +
+    '\n' +
+    '                    </span>\n' +
     '                </td>\n' +
     '            </tr>\n' +
     '            <tr>\n' +
