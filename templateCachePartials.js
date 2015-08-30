@@ -560,11 +560,12 @@ module.run(['$templateCache', function($templateCache) {
     '        <th>Size</th>\n' +
     '        <th>Cost</th>\n' +
     '        <th>CPU</th>\n' +
+    '        <th>Craft</th>\n' +
     '        <th>Notes</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
-    '    <tr ng-repeat="(name, count) in ship.Hangars">\n' +
+    '    <tr ng-repeat="(name, count) in ship[\'Hangar Bay\']">\n' +
     '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
     '        <td ng-bind="count"></td>\n' +
     '        <td ng-bind="name"></td>\n' +
@@ -572,6 +573,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <td>{{hangarHash[name].Size}}</td>\n' +
     '        <td>{{hangarHash[name].Cost}}</td>\n' +
     '        <td>{{hangarHash[name].CPU}}</td>\n' +
+    '        <td>{{hangarHash[name].Craft}}</td>\n' +
     '        <td>{{hangarHash[name].Notes}}</td>\n' +
     '    </tr>\n' +
     '    <tr ng-if="isEmpty(KEY)">\n' +
@@ -584,23 +586,24 @@ module.run(['$templateCache', function($templateCache) {
     '    <thead>\n' +
     '    <tr colspan="7">\n' +
     '        <th></th>\n' +
-    '        <th>Item</th>\n' +
+    '        <th>Hangar</th>\n' +
     '        <th>Space</th>\n' +
     '        <th>Size</th>\n' +
     '        <th>Cost</th>\n' +
     '        <th>CPU</th>\n' +
+    '        <th>Craft</th>\n' +
     '        <th>Notes</th>\n' +
     '    </tr>\n' +
     '    </thead>\n' +
     '    <tbody>\n' +
-    '      <tr><td colspan="7" class="text-center"><strong>Hangars</strong></td></tr>\n' +
     '      <tr ng-repeat="c in hangars">\n' +
-    '          <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)">+</button></td>\n' +
-    '          <td>{{c.Item}}</td>\n' +
+    '          <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c[\'Hangar Bay\'])">+</button></td>\n' +
+    '          <td>{{c[\'Hangar Bay\']}}</td>\n' +
     '          <td>{{c.Space}}</td>\n' +
     '          <td>{{c.Size}}</td>\n' +
     '          <td>{{c.Cost}}</td>\n' +
     '          <td>{{c.CPU}}</td>\n' +
+    '          <td>{{c.Craft}}</td>\n' +
     '          <td>{{c.Notes}}</td>\n' +
     '      </tr>\n' +
     '  </tbody>\n' +
@@ -885,7 +888,7 @@ module.run(['$templateCache', function($templateCache) {
     '                    <span style="font-weight: bold;">Weight</span>\n' +
     '                    <span ng-bind="calculateWeight(ship.hull.Tonnage)"></span> tons;\n' +
     '                    <span style="font-weight: bold;">Cargo Units</span>\n' +
-    '                    <span ng-bind="currentSpace()"></span> (<span ng-bind="maxSpace() - currentSpace()"></span> available)<br>\n' +
+    '                    <span ng-bind="presentCargo()"></span>\n' +
     '                    <span style="font-weight: bold;">Hull Class </span>\n' +
     '                    <span ng-bind=\'ship.hull.Class || "none"\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE || 0"></span>)<br>\n' +
     '                    <span style="font-weight: bold;">Traits</span> {{ship.hullConfig.Traits}}<br>\n' +
@@ -1044,9 +1047,10 @@ module.run(['$templateCache', function($templateCache) {
     '            </tr>\n' +
     '            <tr>\n' +
     '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
-    '                    <span style="font-weight: bold;">Shuttles</span>\n' +
-    '                    <span ng-repeat="(name, quantity) in ship[\'Hangars\']">\n' +
+    '                    <span style="font-weight: bold;">Shuttles & Fighters</span>\n' +
+    '                    <span ng-repeat="(name, quantity) in ship[\'Hangar Bay\']">\n' +
     '                       <span ng-bind="quantity"></span>x <span ng-bind="name"></span>,\n' +
+    '                        (Room for : <span ng-bind="hangarHash[name][\'Craft\'] * quantity"> </span>shuttles or fighters)\n' +
     '                    </span>\n' +
     '                </td>\n' +
     '            </tr>\n' +

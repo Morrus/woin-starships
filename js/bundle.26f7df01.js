@@ -1,3 +1,2739 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*global angular */
+
+Number.fromRoman= function(roman){
+	var accept = true;
+	var s= roman.toUpperCase().replace(/ +/g, ''),
+			L= s.length, sum= 0, i= 0, next, val,
+			R={M: 1000, D: 500, C: 100, L: 50, X: 10, V: 5, I: 1},
+			fromBigRoman= function(rn){
+				var n= 0, x, n1, S, rx=/(\(*)([MDCLXVI]+)/g;
+				while((S= rx.exec(rn))!= null){
+					x= S[1].length;
+					n1= Number.fromRoman(S[2]);
+					if(isNaN(n1)) return NaN;
+					if(x) n1*= Math.pow(1000, x);
+					n+= n1;
+				}
+				return n;
+			};
+	if (/^[MDCLXVI)(]+$/.test(s)){
+		if(s.indexOf('(')== 0) return fromBigRoman(s);
+		while(i<L){
+			val= R[s.charAt(i++)];
+			next= R[s.charAt(i)] || 0;
+			if(next-val>0) val*= -1;
+			sum+= val;
+		}
+		if(accept || sum.toRoman()=== s) return sum;
+	}
+	return NaN;
+};
+
+var angular = require('angular');
+require('../dist/templateCachePartials');
+
+angular.module('woin-starship', ['starshipPartials', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'ngFileUpload'])
+	.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
+		'use strict';
+
+		$urlRouterProvider.otherwise('/basics');
+
+		$stateProvider
+			.state('main', {
+				url: '/',
+				templateUrl: '/partials/starship-index.html'
+			})
+			.state('main.basics', {
+				url: 'basics',
+				views: {
+					content: { templateUrl: '/partials/basics.html' }
+				}
+			})
+			.state('main.hull', {
+				url: 'hull',
+				views: {
+					content: { templateUrl: '/partials/hull.html' }
+				}
+			})
+			.state('main.command', {
+				url: 'commandcontrol',
+				views: {
+					content: { controller: 'CommandCtrl', templateUrl: '/partials/commandcontrol.html' }
+				}
+			})
+			.state('main.sensors', {
+				url: 'sensors',
+				views: {
+					content: { controller: 'SensorCtrl', templateUrl: '/partials/sensors.html' }
+				}
+			})
+			.state('main.crew', {
+				url: 'crew',
+				views: {
+					content: { controller: "CrewCtrl", templateUrl: '/partials/crew.html' }
+				}
+			})
+			.state('main.subluminal', {
+				url: 'subluminal',
+				views: {
+					content: { controller: "SubluminalCtrl", templateUrl: '/partials/subluminal.html' }
+				}
+			})
+			.state('main.ftl', {
+				url: 'ftl',
+				views: {
+					content: { controller: "FtlCtrl", templateUrl: '/partials/ftl.html' }
+				}
+			})
+			.state('main.facilities', {
+				url: 'facilities',
+				views: {
+					content: { controller: "FacilitiesCtrl", templateUrl: '/partials/facilities.html' }
+				}
+			})
+			.state('main.general', {
+				url: 'general',
+				views: {
+					content: { controller: "GeneralCtrl", templateUrl: '/partials/general.html' }
+				}
+			})
+			.state('main.hangars', {
+				url: 'hangars',
+				views: {
+					content: { controller: "HangarsCtrl", templateUrl: '/partials/hangars.html' }
+				}
+			})
+			.state('main.superstructure', {
+				url: 'superstructure',
+				views: {
+					content: { controller: "SuperstructureCtrl", templateUrl: '/partials/superstructure.html' }
+				}
+			})
+			.state('main.weaponry', {
+				url: 'weaponry',
+				views: {
+					content: { controller: "WeaponCtrl", templateUrl: '/partials/weaponry.html' }
+				}
+			})
+			.state('main.deflectors', {
+				url: 'deflectors',
+				views: {
+					content: { controller: "DeflectorShieldCtrl", templateUrl: '/partials/shields.html' }
+				}
+			})
+			.state('main.ship', {
+				url: 'ship',
+				views: {
+					content: { controller: "ShipViewCtrl", templateUrl: '/partials/ship.html' }
+				}
+			})
+		;
+	}]);
+
+require('components');
+require('starshipCtrl');
+require('commandCtrl');
+require('crewCtrl');
+require('facilitiesCtrl');
+require('subluminalCtrl');
+require('ftlCtrl');
+require('weaponCtrl');
+require('deflectorsCtrl');
+require('generalCtrl');
+require('superstructureCtrl');
+require('sensorCtrl');
+require('shipViewCtrl');
+require('hangarsCtrl');
+
+
+},{"../dist/templateCachePartials":2,"angular":18,"commandCtrl":3,"components":4,"crewCtrl":5,"deflectorsCtrl":6,"facilitiesCtrl":7,"ftlCtrl":8,"generalCtrl":9,"hangarsCtrl":10,"sensorCtrl":11,"shipViewCtrl":12,"starshipCtrl":13,"subluminalCtrl":14,"superstructureCtrl":15,"weaponCtrl":16}],2:[function(require,module,exports){
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/basics.html',
+    '<h2>Basic Ship Facts</h2>\n' +
+    '<p class="explainer">\n' +
+    '    Name your vessel!\n' +
+    '</p>\n' +
+    '\n' +
+    '<div class="row display-row">\n' +
+    '    <div class="col-md-3">Name</div>\n' +
+    '    <div class="col-md-9">\n' +
+    '        <input class="form-control" type="text" ng-model="ship.name">\n' +
+    '    </div>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div class="row display-row margin-top-15">\n' +
+    '    <div class="col-md-3">Description</div>\n' +
+    '    <div class="col-md-9">\n' +
+    '        <textarea class="form-control" ng-model="ship.description" rows="3">\n' +
+    '    </div>\n' +
+    '</div>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/commandcontrol.html',
+    '<h2>Control Computer</h2>\n' +
+    '<p class="explainer">\n' +
+    '\n' +
+    '    Nearly every function on a vessel interacts in some way with the computer. The computers, sensors, and engineering facilities on a starship make a up a large part of its efficiency and effectiveness. Faster computers allow a ship to react more quickly in combat situations, while more sensitive sensor systems enable the crew to gather more information about their surroundings. A basic hull comes with a standard integrated computer and sensors, but more powerful systems are needed for effective combat calculations and FTL planning. The computing power aboard a starship cannot be overestimated in its importance.\n' +
+    '\n' +
+    '    A ship\'s computer system is able to perform faster-than-light calculations for FTL travel, and ties directly into the sensor array. Data storage in a ship\'s computer is so efficient that the concept of storage capacity does not factor into computer design any more. Some computer systems have a basic AI, while others do not.\n' +
+    '</p>\n' +
+    '<h3>Your Computers</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Quantity</th>\n' +
+    '        <th>Control Computers</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Max FTL</th>\n' +
+    '        <th>Max CPU</th>\n' +
+    '        <th>Crew</th>\n' +
+    '        <th>Rng Inc</th>\n' +
+    '        <th>SOAK</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '        <th>Checks</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[\'Control Computers\']">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td ng-bind="computerHash[name].Cost"></td>\n' +
+    '        <td ng-bind="computerHash[name].Size"></td>\n' +
+    '        <td ng-bind="computerHash[name].Space"></td>\n' +
+    '        <td ng-bind="computerHash[name][\'Max FTL\']"></td>\n' +
+    '        <td ng-bind="computerHash[name][\'CPU\']"></td>\n' +
+    '        <td ng-bind="computerHash[name].Crew"></td>\n' +
+    '        <td ng-bind="computerHash[name][\'Rng Inc\']"></td>\n' +
+    '        <td ng-bind="computerHash[name].SOAK"></td>\n' +
+    '        <td ng-bind="computerHash[name].DEFENSE"></td>\n' +
+    '        <td ng-bind="computerHash[name].Checks"></td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="13" class="text-center">No control computers selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Control Computers</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Max FTL</th>\n' +
+    '        <th>Max CPU</th>\n' +
+    '        <th>Crew</th>\n' +
+    '        <th>Rng Inc</th>\n' +
+    '        <th>SOAK</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '        <th>Checks</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="c in computers">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c[\'Control Computers\'])">+</button></td>\n' +
+    '        <td ng-bind="c[\'Control Computers\']"></td>\n' +
+    '        <td ng-bind="c.Cost"></td>\n' +
+    '        <td ng-bind="c.Size"></td>\n' +
+    '        <td ng-bind="c.Space"></td>\n' +
+    '        <td ng-bind="c[\'Max FTL\']"></td>\n' +
+    '        <td ng-bind="c[\'CPU\']"></td>\n' +
+    '        <td ng-bind="c.Crew"></td>\n' +
+    '        <td ng-bind="c[\'Rng Inc\']"></td>\n' +
+    '        <td ng-bind="c.SOAK"></td>\n' +
+    '        <td ng-bind="c.DEFENSE"></td>\n' +
+    '        <td ng-bind="c.Checks"></td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/crew.html',
+    '<h2>Troops & Passengers</h2>\n' +
+    '<p class="explainer">\n' +
+    '    In addition to the crew, a ship can carry troops (military personnel of various kinds). Troops add to the crew\n' +
+    '    complement for the purposes of calculating LUXURY (see below), and each uses 2 CU of cargo space.\n' +
+    '\n' +
+    '    Passenger capacity also uses cargo space. Standard passengers use 2 CU each, while Luxury passengers use 4 Cu. As\n' +
+    '    with troops, passengers add to the crew complement for the purposes of calculating LUXURY</p>\n' +
+    '\n' +
+    '<h3>Your Crew</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Quantity</th>\n' +
+    '        <th>Type</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Cost</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[\'Crew\']">\n' +
+    '        <td>\n' +
+    '            <div class="input-group">\n' +
+    '                <input type="number" class="form-control small-input" ng-init="crewValueRemoveHash[name] = 1" ng-model="crewValueRemoveHash[name]" />\n' +
+    '                <button type="button" class="input-group-addon btn btn-primary" ng-click="decrementItem(KEY, name, crewValueRemoveHash[name])">-</button>\n' +
+    '            </div>\n' +
+    '        </td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td ng-bind="crewHash[name].Space"></td>\n' +
+    '        <td ng-bind="crewHash[name].Cost"></td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="13" class="text-center">No crew selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th>Select</th>\n' +
+    '        <th>Type</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Cost</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="p in passengerOptions">\n' +
+    '        <td>\n' +
+    '            <div class="input-group">\n' +
+    '                <input type="number" class="form-control small-input" ng-init="crewValueAddHash[p.Type] = 1" ng-model="crewValueAddHash[p.Type]" />\n' +
+    '                <button type="button" class="input-group-addon btn btn-primary" ng-click="incrementItem(KEY, p.Type, crewValueAddHash[p.Type])">+</button>\n' +
+    '            </div>\n' +
+    '        </td>\n' +
+    '        <td ng-bind="p.Type"></td>\n' +
+    '        <td ng-bind="p.Space"></td>\n' +
+    '        <td ng-bind="p.Cost"></td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/equipment.html',
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/facilities.html',
+    '<h2>Facilities</h2>\n' +
+    '<p class="explainer">\n' +
+    '    They A basic ship comes with a bridge, dormitory accommodations for crew and one cabin for the captain. Ships of smaller than class I do not include accommodations, and have a cockpit instead of a bridge.\n' +
+    '\n' +
+    '    Like all equipment, shipboard facilities have degrees of quality. Sometimes, in the case of a cabin or chapel, this only affects the furnishings and general amenities, creating a happier crew. In the case of functional facilities like sick bays and laboratories, the quality directly affects tasks performed using them..\n' +
+    '</p>\n' +
+    '<h3>Your Facilities</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th class="input-cell"></th>\n' +
+    '        <th>Quantity</th>\n' +
+    '        <th>Customization</th>\n' +
+    '        <th>Cost/crew</th>\n' +
+    '        <th>Luxury/crew</th>\n' +
+    '        <th>Space/crew</th>\n' +
+    '        <th>Recommended</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship.Facilities">\n' +
+    '        <td>\n' +
+    '            <div class="input-group">\n' +
+    '                <input type="number" class="form-control small-input" ng-init="facilitiesValueRemoveHash[name] = 1" ng-model="facilitiesValueRemoveHash[name]" />\n' +
+    '                <button type="button" class="input-group-addon btn btn-primary" ng-click="decrementItem(KEY, name, facilitiesValueRemoveHash[name])">-</button>\n' +
+    '            </div>\n' +
+    '        </td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{facilitiesHash[name][\'Cost/crew\']}}</td>\n' +
+    '        <td>{{facilitiesHash[name][\'Luxury/crew\']}}</td>\n' +
+    '        <td>{{facilitiesHash[name][\'Space/crew\']}}</td>\n' +
+    '        <td>{{facilitiesHash[name].Recommended}}</td>\n' +
+    '        <td>{{facilitiesHash[name].Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="7" class="text-center">No facilities selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th class="input-cell"></th>\n' +
+    '        <th>Customization</th>\n' +
+    '        <th>Cost/crew</th>\n' +
+    '        <th>Luxury/crew</th>\n' +
+    '        <th>Space/crew</th>\n' +
+    '        <th>Recommended</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="c in facilities">\n' +
+    '        <td>\n' +
+    '            <div class="input-group">\n' +
+    '                <input type="number" class="form-control small-input" ng-init="facilitiesValueAddHash[c.Customization] = 1" ng-model="facilitiesValueAddHash[c.Customization]" />\n' +
+    '                <button type="button" class="input-group-addon btn btn-primary" ng-click="incrementItem(KEY, c.Customization, facilitiesValueAddHash[c.Customization])">+</button>\n' +
+    '            </div>\n' +
+    '        </td>\n' +
+    '        <td>{{c.Customization}}</td>\n' +
+    '        <td>{{c[\'Cost/crew\']}}</td>\n' +
+    '        <td>{{c[\'Luxury/crew\']}}</td>\n' +
+    '        <td>{{c[\'Space/crew\']}}</td>\n' +
+    '        <td>{{c.Recommended}}</td>\n' +
+    '        <td>{{c.Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/footer.html',
+    '<footer id="footer" ng-show="todos.length" ng-cloak>\n' +
+    '					<span id="todo-count"><strong>{{remainingCount}}</strong>\n' +
+    '						<ng-pluralize count="remainingCount" when="{ one: \'item left\', other: \'items left\' }"></ng-pluralize>\n' +
+    '					</span>\n' +
+    '    <ul id="filters">\n' +
+    '        <li>\n' +
+    '            <a ng-class="{selected: status == \'\'} " href="#/">All</a>\n' +
+    '        </li>\n' +
+    '        <li>\n' +
+    '            <a ng-class="{selected: status == \'active\'}" href="#/active">Active</a>\n' +
+    '        </li>\n' +
+    '        <li>\n' +
+    '            <a ng-class="{selected: status == \'completed\'}" href="#/completed">Completed</a>\n' +
+    '        </li>\n' +
+    '    </ul>\n' +
+    '    <button id="clear-completed" ng-click="clearCompletedTodos()" ng-show="completedCount">Clear completed ({{completedCount}})</button>\n' +
+    '</footer>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/ftl.html',
+    '<h2>FTL Propulsion Systems\n' +
+    '</h2>\n' +
+    '<p class="explainer">\n' +
+    '    A ship\'s power comes from its engines. Basic engines come integrated in a ship\'s hull type, and provide minimal power. Upgrading the engines is often a new captain\'s first project. The existing engines cannot be sold or exchanged; they have an effective value of zero. There are many types of starship propulsion and power systems. Listed below are some common civilian systems, from liquid fuel or fusion systems to more advanced antimatter or hyperdrive engines. Not all engines provide FTL capability; and FTL engines cannot be used at sub-luminal speeds. For this reason, a vessel may need more than one engine – perhaps a fusion reactor and a hyperdrive system. An engineer will need to balance ship class, space, power, FTL capability and fuel efficiency to obtain her desired outcome.</p>\n' +
+    '<h3>Your FTL Engine</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '        <tr>\n' +
+    '            <th></th>\n' +
+    '            <th>Count</th>\n' +
+    '            <th>FTL Engine</th>\n' +
+    '            <th>Cost</th>\n' +
+    '            <th>Size</th>\n' +
+    '            <th>CPU</th>\n' +
+    '            <th>Space</th>\n' +
+    '            <th>Power</th>\n' +
+    '            <th>Fuel Eff</th>\n' +
+    '        </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[KEY]">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{ftlHash[name].Cost}}</td>\n' +
+    '        <td>{{ftlHash[name].Size}}</td>\n' +
+    '        <td>{{ftlHash[name].CPU}}</td>\n' +
+    '        <td>{{ftlHash[name].Space}}</td>\n' +
+    '        <td>{{ftlHash[name].Power}}</td>\n' +
+    '        <td>{{ftlHash[name][\'Fuel Eff\']}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<h3>Your Backup Engines</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '        <tr>\n' +
+    '            <th></th>\n' +
+    '            <th>Count</th>\n' +
+    '            <th>FTL Engine</th>\n' +
+    '            <th>Cost</th>\n' +
+    '            <th>Size</th>\n' +
+    '            <th>CPU</th>\n' +
+    '            <th>Space</th>\n' +
+    '            <th>Power</th>\n' +
+    '            <th>Fuel Eff</th>\n' +
+    '        </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[BKEY]">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(BKEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{ftlHash[name].Cost}}</td>\n' +
+    '        <td>{{ftlHash[name].Size}}</td>\n' +
+    '        <td>{{ftlHash[name].CPU}}</td>\n' +
+    '        <td>{{ftlHash[name].Space}}</td>\n' +
+    '        <td>{{ftlHash[name].Power}}</td>\n' +
+    '        <td>{{ftlHash[name][\'Fuel Eff\']}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '        <tr>\n' +
+    '            <th>Add</th>\n' +
+    '            <th>Backup</th>\n' +
+    '            <th>FTL Engine</th>\n' +
+    '            <th>Cost</th>\n' +
+    '            <th>Size</th>\n' +
+    '            <th>CPU</th>\n' +
+    '            <th>Space</th>\n' +
+    '            <th>Power</th>\n' +
+    '            <th>Fuel Eff</th>\n' +
+    '        </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="item in ftl">\n' +
+    '        <td><button\n' +
+    '                type="button"\n' +
+    '                class="btn btn-primary"\n' +
+    '                ng-disabled="!hasThisItem(KEY, item[\'FTL Engine\'])"\n' +
+    '                ng-click="incrementOneItem(KEY, item[\'FTL Engine\'])">\n' +
+    '            +</button>\n' +
+    '        </td>\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(BKEY, item[\'FTL Engine\'])">+</button></td>\n' +
+    '        <td>{{item[\'FTL Engine\']}}</td>\n' +
+    '        <td>{{item.Cost}}</td>\n' +
+    '        <td>{{item.Size}}</td>\n' +
+    '        <td>{{item.CPU}}</td>\n' +
+    '        <td>{{item.Space}}</td>\n' +
+    '        <td>{{item.Power}}</td>\n' +
+    '        <td>{{item[\'Fuel Eff\']}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/general.html',
+    '<h2>General Equipment & Systems</h2>\n' +
+    '<p class="explainer">\n' +
+    '    Starships also have a variety of individual pieces of equipment. These cover a wide range of purposes, including fuel scoops, tractor beams, fuel-bay alterations, cloaking devices, and more.</p>\n' +
+    '<h3>Your General Equipment</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Count</th>\n' +
+    '        <th>Item</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship.General">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{generalHash[name].Space}}</td>\n' +
+    '        <td>{{generalHash[name].Size}}</td>\n' +
+    '        <td>{{generalHash[name].Cost}}</td>\n' +
+    '        <td>{{generalHash[name].CPU}}</td>\n' +
+    '        <td>{{generalHash[name].Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="7" class="text-center">No general equipment selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr colspan="7">\n' +
+    '        <th></th>\n' +
+    '        <th>Item</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr><td colspan="7" class="text-center"><strong>Fueling</strong></td></tr>\n' +
+    '    <tr ng-repeat="c in systems.fueling">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)">+</button></td>\n' +
+    '        <td>{{c.Item}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.Size}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr><td colspan="7" class="text-center"><strong>Tractor Beams</strong></td></tr>\n' +
+    '    <tr ng-repeat="c in systems.tractor">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)">+</button></td>\n' +
+    '        <td>{{c.Item}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.Size}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr><td colspan="7" class="text-center"><strong>Engine Mods</strong></td></tr>\n' +
+    '    <tr ng-repeat="c in systems.engMods">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)">+</button></td>\n' +
+    '        <td>{{c.Item}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.Size}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr><td colspan="7" class="text-center"><strong>Electronic Warfare</strong></td></tr>\n' +
+    '    <tr ng-repeat="c in systems.electronicWarfare">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)">+</button></td>\n' +
+    '        <td>{{c.Item}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.Size}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr><td colspan="7" class="text-center"><strong>Cloaking Systems</strong></td></tr>\n' +
+    '    <tr ng-repeat="c in systems.cloaking">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c.Item)" ng-disabled="notValidHull(c.Notes)">+</button></td>\n' +
+    '        <td>{{c.Item}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.Size}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/hangars.html',
+    '<h2>Hangars</h2>\n' +
+    '<p class="explainer">\n' +
+    '  A small shuttlebay or fighter bay is able to accommodate one class 0-III vessel; the bay\'s size correlates to its shuttle capacity. Some larger ships have multiple shuttle bays if they need to carry more than 64 shuttles or fighters. A shuttlebay comes already stocked with fighters or shuttles as part of the price. Launching a fighter squadron or a shuttle requires one action.\n' +
+    '</p>\n' +
+    '<h3>Your Hangars</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Count</th>\n' +
+    '        <th>Item</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Craft</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[\'Hangar Bay\']">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{hangarHash[name].Space}}</td>\n' +
+    '        <td>{{hangarHash[name].Size}}</td>\n' +
+    '        <td>{{hangarHash[name].Cost}}</td>\n' +
+    '        <td>{{hangarHash[name].CPU}}</td>\n' +
+    '        <td>{{hangarHash[name].Craft}}</td>\n' +
+    '        <td>{{hangarHash[name].Notes}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="7" class="text-center">No Hangars selected</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr colspan="7">\n' +
+    '        <th></th>\n' +
+    '        <th>Hangar</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Craft</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '      <tr ng-repeat="c in hangars">\n' +
+    '          <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c[\'Hangar Bay\'])">+</button></td>\n' +
+    '          <td>{{c[\'Hangar Bay\']}}</td>\n' +
+    '          <td>{{c.Space}}</td>\n' +
+    '          <td>{{c.Size}}</td>\n' +
+    '          <td>{{c.Cost}}</td>\n' +
+    '          <td>{{c.CPU}}</td>\n' +
+    '          <td>{{c.Craft}}</td>\n' +
+    '          <td>{{c.Notes}}</td>\n' +
+    '      </tr>\n' +
+    '  </tbody>\n' +
+    '</table>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/hull.html',
+    '<h2>Starship Hull Configuration</h2>\n' +
+    '<p class="explainer">\n' +
+    '    Select an (optional) hull configuration. There are as many different vessel types as there are stars in the\n' +
+    '    sky. The following list is a summary of some common classifications listed in approximate typical size order. Each\n' +
+    '    configuration grants the ship one exploit.\n' +
+    '</p>\n' +
+    '<select style=\'overflow:hidden;max-width:500px;\'\n' +
+    '        ng-model="ship.hullConfig"\n' +
+    '        ng-options="presentType(config) for config in hullConfigurations">\n' +
+    '</select>\n' +
+    '\n' +
+    '<h2>Starship Hull Class</h2>\n' +
+    '<p class="explainer">\n' +
+    '\n' +
+    '    Starships are categorized by class, which is a rough measure of tonnage. This initial decision determines the size\n' +
+    '    parameters of your ship design. It also determines your crew requirement, fuel capacity, cargo space, and DEFENSE\n' +
+    '    values.\n' +
+    '</p>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th>Select</th>\n' +
+    '        <th>Class</th>\n' +
+    '        <th>Tonnage</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Crew</th>\n' +
+    '        <th>Max CU</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '        <th>Fuel</th>\n' +
+    '        <th>Initiative</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="h in hulls">\n' +
+    '        <td><input type="radio" ng-model="ship.hull" ng-value="h" ng-change="clearCloaking()"></td>\n' +
+    '        <td ng-bind="h.Class"></td>\n' +
+    '        <td ng-bind="h.Tonnage"></td>\n' +
+    '        <td ng-bind="h.Cost"></td>\n' +
+    '        <td ng-bind="h.Crew"></td>\n' +
+    '        <td ng-bind="h[\'Max CU\']"></td>\n' +
+    '        <td ng-bind="h.DEFENSE"></td>\n' +
+    '        <td ng-bind="h.FUEL"></td>\n' +
+    '        <td ng-bind="h.INITIATIVE"></td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/misc.html',
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/sensors.html',
+    '<h2>Sensor Systems</h2>\n' +
+    '<p class="explainer">\n' +
+    '\n' +
+    '    A sensor array is a collection of sensors and sub processors designed to gather and collate information. They include navigational and combat sensors, as well as equipment which measures and records the environment capable of detecting a wide range of phenomena. Sensors also include communications equipment, and are used for offensive electronic warfare.</p>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Sensor Systems</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Range</th>\n' +
+    '        <th>Range Inc</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '        <th>Checks</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="s in sensors">\n' +
+    '        <td><input type="radio" ng-model="ship.sensor" ng-value="s"></td>\n' +
+    '        <td ng-bind="s[\'Sensor Systems\']"></td>\n' +
+    '        <td ng-bind="s.Cost"></td>\n' +
+    '        <td ng-bind="s.Size"></td>\n' +
+    '        <td ng-bind="s.Space"></td>\n' +
+    '        <td ng-bind="s.Range"></td>\n' +
+    '        <td ng-bind="s[\'Range Inc\']"></td>\n' +
+    '        <td ng-bind="s.DEFENSE"></td>\n' +
+    '        <td ng-bind="s.Checks"></td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/shields.html',
+    '<h2>Your Point Defenses</h2>\n' +
+    '<p class="explainer">\n' +
+    '    Point defenses are close-in weaponry batteries and active protection systems which automatically detect, track, and destroy incoming missiles and fighter craft. They are ineffective against energy weapons such as lasers and distruptors, but very effective against torpedoes. Unlike shields and armor, point defense batteries do not grant a SOAK bonus; instead they provide a DEFENSE bonus against missile weapons (but not energy weapons).\n' +
+    '</p>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Amount</th>\n' +
+    '        <th>Name</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Cost/point</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '        <th>Aura<th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[PKEY]">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(PKEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{pointDefensesHash[name].Space}}</td>\n' +
+    '        <td>{{pointDefensesHash[name].CPU}}</td>\n' +
+    '        <td>{{pointDefensesHash[name].Cost}}</td>\n' +
+    '        <td>{{pointDefensesHash[name].DEFENSE}}</td>\n' +
+    '        <td>{{pointDefensesHash[name].Aura}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="7" class="text-center">No point defenses selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Point Defense</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Cost/point</th>\n' +
+    '        <th>DEFENSE</th>\n' +
+    '        <th>Aura</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="c in pointDefenses">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(PKEY, c[PKEY])">+</button></td>\n' +
+    '        <td>{{c[\'Point Defenses\']}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.DEFENSE}}</td>\n' +
+    '        <td>{{c.Aura}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<h2>Deflector Shields</h2>\n' +
+    '<p class="explainer">\n' +
+    '    Deflector shields (also referred to as screens or force-fields) are a technology devised to protect ships, stations, and sometimes even planets from damage. A deflector shield is a (usually invisible) field projected around an object which disperses or deflects energy and projectiles. The shields may use various energy types to create the fields – magnetic fields, gravitons, and so on – but most have much the same effect. Shields are not typically raised at all times (although navigational shields stay active permanently; larger shields have a lower navigational power level which is used during normal travel). Shield capacity is directly proportional to the power generated divided by the size of the area to be protected. Earlier shields typically project an elliptical field around the object to be protected, while more advanced versions conform to the contours of the ship within a few feet or so.</p>\n' +
+    '<h3>Your Deflector Shields</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Amount</th>\n' +
+    '        <th>Deflector Shield</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Power</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[KEY]">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{deflectorHash[name].Cost}}</td>\n' +
+    '        <td>{{deflectorHash[name].Size}}</td>\n' +
+    '        <td>{{deflectorHash[name].CPU}}</td>\n' +
+    '        <td>{{deflectorHash[name].Space}}</td>\n' +
+    '        <td>{{deflectorHash[name].Power}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="7" class="text-center">No deflectors selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Deflector Shield</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Power</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="c in deflectors">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c[KEY])">+</button></td>\n' +
+    '        <td>{{c[\'Deflector Shields\']}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.Size}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.Power}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/ship.html',
+    '{{ship}}\n' +
+    '\n' +
+    '<div class="row">\n' +
+    '    <div class="col-md-8">\n' +
+    '        <table class=\'centered\' cols="10" frame="void" rules="none" border="0" cellspacing="0">\n' +
+    '            <colgroup>\n' +
+    '                <col width="157">\n' +
+    '                <col width="72">\n' +
+    '                <col width="61">\n' +
+    '                <col width="71">\n' +
+    '                <col width="52">\n' +
+    '                <col width="50">\n' +
+    '                <col width="43">\n' +
+    '                <col width="48">\n' +
+    '                <col width="48">\n' +
+    '                <col width="48">\n' +
+    '            </colgroup>\n' +
+    '            <tbody>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="center" height="23" bgcolor="#cccccc"\n' +
+    '                    valign="bottom" width="650">{{ship.name}} Class {{ship.hull.Class}} {{ship.hullConfig.Type}}</b></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Weight</span>\n' +
+    '                    <span ng-bind="calculateWeight(ship.hull.Tonnage)"></span> tons;\n' +
+    '                    <span style="font-weight: bold;">Cargo Units</span>\n' +
+    '                    <span ng-bind="presentCargo()"></span>\n' +
+    '                    <span style="font-weight: bold;">Hull Class </span>\n' +
+    '                    <span ng-bind=\'ship.hull.Class || "none"\'></span> (INIT <span ng-bind="ship.hull.INITIATIVE || 0"></span>)<br>\n' +
+    '                    <span style="font-weight: bold;">Traits</span> {{ship.hullConfig.Traits}}<br>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Crew</span>\n' +
+    '                    <span ng-bind="calculateCrew() || 0"></span> (cost <span ng-bind="(calculateCrew() * 200)"></span>Cr/m);\n' +
+    '                    <span style="font-weight: bold;">Troops</span>\n' +
+    '                    <span ng-bind="ship.Crew.Troops || 0"></span>; Passengers\n' +
+    '                    <span ng-bind="ship.Crew[\'Standard Passengers\'] + ship.Crew[\'Luxury Passengers\'] || 0"></span>\n' +
+    '                    (<span ng-bind="ship.Crew[\'Standard Passengers\'] || 0"></span> standard, <span ng-bind="ship.Crew[\'Luxury Passengers\'] || 0"></span> luxury)\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" bgcolor="#dddddd" valign="bottom">\n' +
+    '                    <b>Command &amp; Control Systems</b>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Computers: </span>\n' +
+    '                    <span ng-repeat="(name, quantity) in ship[\'Control Computers\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        ( each CPU cycles: <span ng-bind="computerHash[name][\'CPU\']"></span> ;\n' +
+    '                        max FTL: <span ng-bind="computerHash[name][\'Max FTL\']"></span> ;\n' +
+    '                        checks: <span ng-bind="computerHash[name].Checks"></span> )\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Sensors</span>\n' +
+    '                    <span ng-bind="ship.sensor[\'Sensor Systems\'] || \'none\'"></span>\n' +
+    '                    (range <span ng-bind="ship.sensor.Range || 0"></span>; check <span ng-bind="ship.sensor.Checks || 0"></span>)\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" bgcolor="#dddddd" valign="bottom">\n' +
+    '                    <b>Engine &amp; Power Data</b>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Subluminal</span>\n' +
+    '                      <span ng-repeat="(name, quantity) in ship[\'Sub-luminal Engine\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        ( each power: <span ng-bind="sublHash[name][\'Power\']"></span> ;\n' +
+    '                        SPEED: <span ng-bind="calculateSublSpeed(name, quantity) | number:1"></span> ;\n' +
+    '                        fuel efficiency: <span ng-bind="sublHash[name][\'Fuel Eff\']"></span> )\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">FTL</span>\n' +
+    '                      <span ng-repeat="(name, quantity) in ship[\'FTL Engine\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        ( each power: <span ng-bind="ftlHash[name][\'Power\']"></span> ;\n' +
+    '                        FTL: <span ng-bind="calculateFtl(name, quantity) | number:1"></span> ;\n' +
+    '                        fuel efficiency: <span ng-bind="ftlHash[name][\'Fuel Eff\']"></span> )\n' +
+    '                    <br>\n' +
+    '                    <span style="font-weight: bold;">Backup FTL</span>\n' +
+    '                     <span ng-repeat="(name, quantity) in ship[\'Backup FTL Engine\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        ( each power: <span ng-bind="ftlHash[name][\'Power\']"></span> ;\n' +
+    '                        FTL: <span ng-bind="calculateFtl(name, quantity) | number:1"></span> ;\n' +
+    '                        fuel efficiency: <span ng-bind="ftlHash[name][\'Fuel Eff\']"></span> )\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Operational Range</span>\n' +
+    '                    <span ng-bind="calculateOperationalRange()"></span> parsecs\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" bgcolor="#dddddd" valign="bottom"><b>Defensive Data</b></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Superstructure</span>\n' +
+    '                    <span ng-bind="calculateSuperstructure() || \'none\'"></span>\n' +
+    '                    <span style="font-weight: bold;">DEFENSE</span>\n' +
+    '                    <span ng-bind="calculateDefense()"></span>\n' +
+    '                    <span style="font-weight: bold;">ELECTRONIC DEFENSE</span>\n' +
+    '                    <span ng-bind="calculateElectronicDefense()"></span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Armor</span>\n' +
+    '                    <span ng-bind="presentArmor() || \'none\'"></span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Shields</span>\n' +
+    '                     <span ng-repeat="(name, quantity) in ship[\'Deflector Shields\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        (power: <span ng-bind="deflectorHash[name][\'Power\'] * quantity"></span>;\n' +
+    '                        SOAK: <span ng-bind="calculateSoak(deflectorHash[name][\'Power\'], quantity)"></span>)\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Point Defenses</span>\n' +
+    '                     <span ng-repeat="(name, quantity) in ship[\'Point Defenses\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        (DEFENSE: <span ng-bind="pointDefensesHash[name][\'DEFENSE\'] * quantity"></span>)\n' +
+    '\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" bgcolor="#dddddd" valign="bottom"><b>Weapons Data</b></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                     <span ng-repeat="(name, quantity) in ship[\'Weapon System\']">\n' +
+    '                        <span ng-bind="quantity"></span>x <span ng-bind="name"></span>\n' +
+    '                        (range: <span ng-bind="calculateWeaponRange(name)"></span>;\n' +
+    '                        damage: <span ng-bind="weaponHash[name][\'Damage\']"></span>;\n' +
+    '                        attack: <span ng-bind="weaponHash[name][\'Attack\']"></span>)<br/>\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" bgcolor="#dddddd" valign="bottom"><b>Facilities</b></td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" sdnum="2057;0;0" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Luxury</span>\n' +
+    '                    <span ng-bind="calculateLuxury() || \'none\'"></span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="11" align="left" height="17" valign="bottom"><span style="font-weight: bold;">Facilities</span>\n' +
+    '                    <span ng-repeat="(name, quantity) in ship[\'Facilities\']">\n' +
+    '                        <span ng-bind="name"></span> (<span ng-bind="quantity"></span>),\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="12" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Other Systems</span>\n' +
+    '                     <span ng-repeat="(name, quantity) in ship[\'General\']">\n' +
+    '                         <span ng-if="!(isHangar(name))">\n' +
+    '                            <span ng-bind="quantity"></span>x <span ng-bind="name"></span> (<span ng-bind="quantity"></span>),\n' +
+    '                         </span>\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" valign="bottom">\n' +
+    '                    <span style="font-weight: bold;">Shuttles & Fighters</span>\n' +
+    '                    <span ng-repeat="(name, quantity) in ship[\'Hangar Bay\']">\n' +
+    '                       <span ng-bind="quantity"></span>x <span ng-bind="name"></span>,\n' +
+    '                        (Room for : <span ng-bind="hangarHash[name][\'Craft\'] * quantity"> </span>shuttles or fighters)\n' +
+    '                    </span>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            <tr>\n' +
+    '                <td colspan="10" align="left" height="17" bgcolor="#dddddd" valign="bottom">\n' +
+    '                    <b>Market Value {{ totalCost() }} MCr</b>\n' +
+    '                </td>\n' +
+    '            </tr>\n' +
+    '            </tbody>\n' +
+    '        </table>\n' +
+    '        <div>\n' +
+    '        </div>\n' +
+    '    </div>\n' +
+    '\n' +
+    '</div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/starship-index.html',
+    '<div class="row">\n' +
+    '    <div class="col-md-3">\n' +
+    '        <tabs data="tabs" vertical="true" type="pills"></tabs>\n' +
+    '    </div>\n' +
+    '    <div class="col-md-9">\n' +
+    '        <div ui-view="content"></div>\n' +
+    '    </div>\n' +
+    '</div>\n' +
+    '\n' +
+    '\n' +
+    '\n' +
+    '');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/subluminal.html',
+    '<h2>Sub-luminal Propulsion Systems\n' +
+    '</h2>\n' +
+    '<p class="explainer">\n' +
+    '    A ship\'s power comes from its engines. Basic engines come integrated in a ship\'s hull type, and provide minimal power. Upgrading the engines is often a new captain\'s first project. The existing engines cannot be sold or exchanged; they have an effective value of zero. There are many types of starship propulsion and power systems. Listed below are some common civilian systems, from liquid fuel or fusion systems to more advanced antimatter or hyperdrive engines. Not all engines provide FTL capability; and FTL engines cannot be used at sub-luminal speeds. For this reason, a vessel may need more than one engine – perhaps a fusion reactor and a hyperdrive system. An engineer will need to balance ship class, space, power, FTL capability and fuel efficiency to obtain her desired outcome.</p>\n' +
+    '<h3>Your Sub-luminal Engine</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Count</th>\n' +
+    '        <th>Sub-luminal Engine</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Power</th>\n' +
+    '        <th>Fuel Eff</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[KEY]">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{item[\'Sub-luminal Engine\']}}</td>\n' +
+    '        <td>{{item.Cost}}</td>\n' +
+    '        <td>{{item.Size}}</td>\n' +
+    '        <td>{{item.CPU}}</td>\n' +
+    '        <td>{{item.Space}}</td>\n' +
+    '        <td>{{item.Power}}</td>\n' +
+    '        <td>{{item[\'Fuel Eff\']}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Sub-luminal Engine</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Power</th>\n' +
+    '        <th>Fuel Eff</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="item in subluminal">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementOneItem(KEY, item[KEY])">+</button></td>\n' +
+    '        <td>{{item[KEY]}}</td>\n' +
+    '        <td>{{item.Cost}}</td>\n' +
+    '        <td>{{item.Size}}</td>\n' +
+    '        <td>{{item.CPU}}</td>\n' +
+    '        <td>{{item.Space}}</td>\n' +
+    '        <td>{{item.Power}}</td>\n' +
+    '        <td>{{item[\'Fuel Eff\']}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/superstructure.html',
+    '<h2>Superstructure</h2>\n' +
+    '<p class="explainer">\n' +
+    '    A basic ship\'s SUPERSTRUCTURE is equal to three times its ship class. This typically isn\'t a lot, and many ships have additional superstructure added to the hull. Superstructure is cheaper and lighter than armor; but it does deplete, which armor does not tend to do.\n' +
+    '</p>\n' +
+    '<h3>Your Superstructure</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Quantity</th>\n' +
+    '        <th>Type</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[\'Superstructure\']">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td ng-bind="superstructureHash[name].Space"></td>\n' +
+    '        <td ng-bind="superstructureHash[name].Cost"></td>\n' +
+    '        <td ng-bind="superstructureHash[name].Notes"></td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="13" class="text-center">No additional superstructure selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th>Select</th>\n' +
+    '        <th>Type</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Notes</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="p in superstructureOptions">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, p[\'Type\'])">+</button></td>\n' +
+    '        <td ng-bind="p.Type"></td>\n' +
+    '        <td ng-bind="p.Space"></td>\n' +
+    '        <td ng-bind="p.Cost"></td>\n' +
+    '        <td ng-bind="p.Notes"></td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('starshipPartials');
+} catch (e) {
+  module = angular.module('starshipPartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/partials/weaponry.html',
+    '<h2>Weaponry</h2>\n' +
+    '<p class="explainer">\n' +
+    '    Weaponry is a vital part of starship design. From lasers, phasers, blasters, and disruptors to torpedoes, warheads, and railguns, the number of ways the basic idea of “fire something at your target to damage it” is immeasurable. This page can only hope to skim a few examples, but entire libraries would be needed to catalog all the weapons and their variations available. For that reason, this section is only a very basic overview of a few common weapon types.\n' +
+    '</p>\n' +
+    '<h3>Your Weaponry</h3>\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Amount</th>\n' +
+    '        <th>Weapon System</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Range</th>\n' +
+    '        <th>Attack</th>\n' +
+    '        <th>Damage</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="(name, count) in ship[\'Weapon System\']">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="decrementItem(KEY, name)">-</button></td>\n' +
+    '        <td ng-bind="count"></td>\n' +
+    '        <td ng-bind="name"></td>\n' +
+    '        <td>{{weaponHash[name].Cost}}</td>\n' +
+    '        <td>{{weaponHash[name].Size}}</td>\n' +
+    '        <td>{{weaponHash[name].CPU}}</td>\n' +
+    '        <td>{{weaponHash[name].Space}}</td>\n' +
+    '        <td>{{weaponHash[name].Range}}</td>\n' +
+    '        <td>{{weaponHash[name].Attack}}</td>\n' +
+    '        <td>{{weaponHash[name].Damage}}</td>\n' +
+    '    </tr>\n' +
+    '    <tr ng-if="isEmpty(KEY)">\n' +
+    '        <td colspan="10" class="text-center">No weaponry selected.</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>\n' +
+    '\n' +
+    '<table class="table table-striped">\n' +
+    '    <thead>\n' +
+    '    <tr>\n' +
+    '        <th></th>\n' +
+    '        <th>Weapon System</th>\n' +
+    '        <th>Cost</th>\n' +
+    '        <th>Size</th>\n' +
+    '        <th>CPU</th>\n' +
+    '        <th>Space</th>\n' +
+    '        <th>Range</th>\n' +
+    '        <th>Attack</th>\n' +
+    '        <th>Damage</th>\n' +
+    '    </tr>\n' +
+    '    </thead>\n' +
+    '    <tbody>\n' +
+    '    <tr ng-repeat="c in weapons">\n' +
+    '        <td><button type="button" class="btn btn-primary" ng-click="incrementItem(KEY, c[\'Weapon System\'])">+</button></td>\n' +
+    '        <td>{{c[\'Weapon System\']}}</td>\n' +
+    '        <td>{{c.Cost}}</td>\n' +
+    '        <td>{{c.Size}}</td>\n' +
+    '        <td>{{c.CPU}}</td>\n' +
+    '        <td>{{c.Space}}</td>\n' +
+    '        <td>{{c.Range}}</td>\n' +
+    '        <td>{{c.Attack}}</td>\n' +
+    '        <td>{{c.Damage}}</td>\n' +
+    '    </tr>\n' +
+    '    </tbody>\n' +
+    '</table>');
+}]);
+})();
+
+
+},{}],3:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('CommandCtrl', ["$scope", function CommandCtrl($scope) {
+
+    var KEY = $scope.KEY = 'Control Computers';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+
+    $scope.computerHash = $scope.$parent.computerHash;
+  }]);
+
+},{"angular":18}],4:[function(require,module,exports){
+var angular = require('angular');
+
+angular.module('woin-starship').service('Components',
+    function() {
+      var self = this;
+
+      self.loadCsvData = function (scope) {
+        scope.hulls = [];
+        scope.computers = [];
+        scope.sensors = [];
+        scope.deflectors = [];
+        scope.facilities = [];
+        scope.ftl = [];
+        scope.subluminal = [];
+        scope.hangars = [];
+        scope.hangarHash = {};
+        scope.generalHash = {};
+
+        scope.pointDefenses = [];
+        scope.pointDefensesHash = {};
+
+        scope.systems = {
+          cloaking: [],
+          fueling: [],
+          commandControl: [],
+          tractor: [],
+          engMods: [],
+          cargo: [],
+          electronicWarfare: []
+        };
+
+        scope.weapons = [];
+        scope.hullConfigurations = [];
+        scope.passengerOptions = passengers;
+        scope.superstructureOptions = superstructures;
+
+        scope.crewHash = {};
+        _.each(scope.passengerOptions, function (item) {
+          scope.crewHash[item['Type']] = item;
+        });
+
+        scope.superstructureHash = {};
+        _.each(scope.superstructureOptions, function (item) {
+          scope.superstructureHash[item['Type']] = item;
+        });
+
+        var doDownload = location.hostname === 'starships.enworld.org';
+        var getUrl = function(file) {
+          return 'http://www.enworld.org/woin/components/' + file + '.csv';
+        };
+
+        Papa.parse(doDownload ? getUrl('computers') : computers, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            var KEY = 'Control Computers';
+            scope.computers.push(row.data[0]);
+            scope.computerHash = {};
+            _.each(scope.computers, function (item) {
+              scope.computerHash[item[KEY]] = item;
+            });
+          },
+          complete: function () {
+            console.log("Computers Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('deflectors') : deflectors, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            var KEY = 'Deflector Shields';
+            scope.deflectors.push(row.data[0]);
+            scope.deflectorHash = {};
+            _.each(scope.deflectors, function (item) {
+              scope.deflectorHash[item[KEY]] = item;
+            });
+
+
+
+          },
+          complete: function () {
+            console.log("Deflectors Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('facilities') : facilities, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            scope.facilities.push(row.data[0]);
+            scope.facilitiesHash = {};
+            _.each(scope.facilities, function (item) {
+              scope.facilitiesHash[item['Customization']] = item;
+            });
+          },
+          complete: function () {
+            console.log("Facilities Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('ftl') : ftl, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            scope.ftl.push(row.data[0]);
+            var KEY = 'FTL Engine';
+            scope.ftlHash = {};
+            _.each(scope.ftl, function (item) {
+              scope.ftlHash[item[KEY]] = item;
+            });
+          },
+          complete: function () {
+            console.log("FTL Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('hulls') : hulls, {
+          header: true,
+          download: doDownload,
+          quotes: true,
+          dynamicTyping: true,
+          step: function (row) {
+            scope.hulls.push(row.data[0]);
+          },
+          complete: function () {
+            console.log("Hulls Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('shiptype') : types, {
+          header: true,
+          download: doDownload,
+          quotes: true,
+          dynamicTyping: true,
+          step: function (row) {
+            scope.hullConfigurations.push(row.data[0]);
+          },
+          complete: function () {
+            console.log("Hull Types Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('sensors') : sensors, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            scope.sensors.push(row.data[0]);
+          },
+          complete: function () {
+            console.log("Sensors Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('subluminal') : subluminal, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            var KEY = 'Sub-luminal Engine';
+            scope.subluminal.push(row.data[0]);
+            scope.sublHash = {};
+            _.each(scope.subluminal, function (item) {
+              scope.sublHash[item[KEY]] = item;
+            });
+          },
+          complete: function () {
+            console.log("Subluminal Loaded");
+          }
+        });
+
+        // systems
+        Papa.parse(doDownload ? getUrl('cloaks') : cloaking, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            scope.systems.cloaking.push(row.data[0]);
+          },
+          complete: function () {
+            console.log("cloaking Systems Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('weapons') : weapons, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            var KEY = 'Weapon System';
+            scope.weapons.push(row.data[0]);
+
+            scope.weaponHash = {};
+            _.each(scope.weapons, function (item) {
+              scope.weaponHash[item[KEY]] = item;
+            });
+          },
+          complete: function () {
+            console.log("Weapons Loaded");
+          }
+        });
+
+        Papa.parse(doDownload ? getUrl('systems') : systems, {
+          header: true,
+          download: doDownload,
+          dynamicTyping: true,
+          step: function (row) {
+            var s = row.data[0];
+            console.log("Loaded s:" + s.Type);
+            scope.generalHash[s.Item] = s;
+            switch(s.Type) {
+              case 'Tractor Beam':
+                scope.systems.tractor.push(s);
+                break;
+              case 'Cargo Equipment':
+                scope.systems.cargo.push(s);
+                break;
+              case 'Engineering Modification':
+                scope.systems.engMods.push(s);
+                break;
+              case 'Fueling Equipment':
+                scope.systems.fueling.push(s);
+                break;
+              case 'C&C':
+                scope.systems.commandControl.push(s);
+                break;
+              case 'ECM':
+                scope.systems.electronicWarfare.push(s);
+                break;
+              case 'Hangar':
+                break;
+              default:
+                break;
+            }
+          }
+        })
+
+        Papa.parse(pointDefences, {
+          header: true,
+          dynamicTyping: true,
+          step: function (row) {
+            scope.pointDefenses.push(row.data[0]);
+            scope.pointDefensesHash[row.data[0]['Point Defenses']] = row.data[0];
+          },
+          complete: function () {
+            console.log("Point Defence Systems Loaded");
+          }
+        });
+
+        Papa.parse(hangars, {
+          header: true,
+          dynamicTyping: true,
+          step: function (row) {
+            row.data[0].hangar = true;
+            scope.hangars.push(row.data[0]);
+            scope.hangarHash[row.data[0]['Hangar Bay']] = row.data[0];
+          },
+          complete: function () {
+            console.log("Hangars");
+          }
+        });
+      };
+
+      var types =
+        "Type,Traits\n" +
+        "Patrol Craft,\"Evasive, Inspector\"\n" +
+        "Courier,\"Fast, Silent-running\"\n" +
+        "Research Ship,\"Scientific, Deep Scan\"\n" +
+        "Yacht,Well-appointed\n" +
+        "Scout,Explorer\n" +
+        "Freighter,Hauler\n" +
+        "Escort,Tactical\n" +
+        "Destroyer,Heavily-armed\n" +
+        "Frigate,Gunboat\n" +
+        "Transport,Skeleton Crew\n" +
+        "Cruiser,5 Year Mission\n" +
+        "Liner,\"Luxurious, Skeleton Crew\"\n" +
+        "Battleship,Tough\n" +
+        "Carrier,Scramble";
+
+      var computers =
+        "Control Computers,Cost,Size,Space,Max FTL,CPU,Crew,Rng Inc,SOAK,DEFENSE,Checks\n" +
+        "Chemerkin-Liang Products LM-1,30,L,5,4,16,-,15,1,-,+0d6\n" +
+        "Chemerkin-Liang Products LM-2,60,L,5,5,20,-1.00%,16,1,-,+0d6\n" +
+        "Chemerkin-Liang Products LM-2H,380,L,5,10,40,-6.00%,18,2,1,+1d6\n" +
+        "Chemerkin-Liang Products LM-2S,800,L,5,13,52,-11.00%,21,2,2,+1d6\n" +
+        "Chemerkin-Liang Products LM-3S,1200,L,5,14,56,-13.00%,22,2,3,+1d6\n" +
+        "Chemerkin-Liang Products LM-5S,2000,L,5,16,64,-15.00%,23,3,4,+1d6\n" +
+        "Frontier Products Frontier Products MM-1,15,M,3,2,8,-,10,-,-,+0d6\n" +
+        "Frontier Products MM-2,30,M,3,3,12,-1.00%,11,-,-,+0d6\n" +
+        "Frontier Products MM-3,45,M,3,4,16,-2.00%,11,-,1,+0d6\n" +
+        "Frontier Products MM-3H,345,M,3,8,32,-7.00%,13,1,2,+1d6\n" +
+        "Frontier Products MM-4H,435,M,3,9,36,-8.00%,14,2,2,+1d6\n" +
+        "Highwatch SM-1,3,S,1,2,8,-,5,-,-,+0d6\n" +
+        "Highwatch SM-1H,109,S,1,4,16,-5.00%,7,1,1,+1d6\n" +
+        "MicroCorp EM-2H,470,E,10,9,36,-11.00%,23,3,1,+1d6\n" +
+        "MicroCorp EM-3S,1425,E,10,14,56,-17.00%,26,3,3,+1d6\n" +
+        "Newstellar EM-1,45,E,10,4,16,-5.00%,20,2,-,+0d6\n" +
+        "Newstellar EM-1H,235,E,10,8,32,-10.00%,22,3,1,+1d6\n" +
+        "Terra Prime GM-1,75,G,20,4,16,-10.00%,25,3,-,+0d6\n" +
+        "Terra Prime GM-1H,325,G,20,8,32,-15.00%,27,4,1,+1d6";
+
+      var hangars =
+        "Hangar Bay,Space,Size,Cost,CPU,Craft\n"+
+        "Parsec Systems ZM2 Shuttle/fighter Bay,25,S,400,1,1\n"+
+        "Megalight EI93 Shuttle/fighter Bay,80,M,700,1,4\n"+
+        "Ultrabeam VN34 Shuttle/fighter Bay,150,L,1000,2,16\n"+
+        "Waydyne Shuttle/fighter Bay,250,E,1500,2,32\n"+
+        "Newwide Gravitics DI11 Shuttle/fighter Bay,460,G,2000,3,64";
+
+      var hulls =
+        "Class,Tonnage,Cost,Crew,Max CU,DEFENSE,FUEL,INITIATIVE\n" +
+        "I,\"1,000-5,000\",5,4,50,20,1,-\n" +
+        "II,\"5,000-15,000\",20,5,150,19,8,-\n" +
+        "III,\"15,000-25,000\",45,7,250,18,27,-\n" +
+        "IV,\"25,000-40,000\",80,12,400,17,64,-\n" +
+        "V,\"40,000-60,000\",125,20,600,16,125,-1d6\n" +
+        "VI,\"60,000-80,000\",180,30,800,15,216,-1d6\n" +
+        "VII,\"80,000-100,000\",245,50,1000,14,343,-1d6\n" +
+        "VIII,\"100,000-120,000\",320,100,1200,13,512,-1d6\n" +
+        "IX,\"120,000-140,000\",405,200,1400,12,729,-1d6\n" +
+        "X,\"140,000-160,000\",500,300,1600,11,1000,-2d6\n" +
+        "XI,\"160,000-180,000\",605,400,1800,10,1331,-2d6\n" +
+        "XII,\"180,000-210,000\",620,500,2100,9,1728,-2d6\n" +
+        "XIII,\"210,000-240,000\",845,750,2400,8,2197,-2d6\n" +
+        "XIV,\"240,000-300,000\",980,1000,3000,7,2744,-2d6\n" +
+        "XV,\"300,000-350,000\",1125,2000,3500,6,3375,-3d6\n" +
+        "XVI,\"350,000-400,000\",1280,3000,4000,5,4096,-3d6\n" +
+        "XVII,\"400,000-450,000\",1445,4000,4500,4,4913,-3d6\n" +
+        "XVIII,\"450,000-500,000\",1620,5000,5000,3,5832,-3d6";
+
+      var sensors =
+        "Sensor Systems,Cost,Size,Space,Range,Range Inc,DEFENSE,Checks\n" +
+        "Chen-Collins SS-1,4,S,1,2,5,-,+0d6\n" +
+        "Chen-Collins SS-2,8,S,1,4,6,-,+0d6\n" +
+        "Chen-Collins SS-2H,224,S,1,8,8,1,+1d6\n" +
+        "Interstellar Enterprises MS-1,20,M,3,4,10,-,+0d6\n" +
+        "Interstellar Enterprises MS-1H,160,M,3,8,12,1,+1 die\n" +
+        "Interstellar Enterprises MS-2,40,M,3,6,11,-,+0d6\n" +
+        "Lunar Works LS-1,40,L,5,6,15,-,+0d6\n" +
+        "Lunar Works LS-2,80,L,5,8,16,-,+0d6\n" +
+        "Lunar Works LS-2H,160,L,5,14,18,1,+1d6\n" +
+        "Newwatch ES-1,60,E,10,8,20,-,+0d6\n" +
+        "Newwatch ES-1H,280,E,10,16,22,1,+1d6\n" +
+        "Newwatch ES-2,120,E,10,10,21,-,+0d6\n" +
+        "Intergalactic Foundation GS-1,100,G,20,110,25,-,+0d6\n" +
+        "Intergalactic Foundation GS-2,200,G,20,12,26,-,+0d6\n" +
+        "Intergalactic Foundation GS-2H,800,G,20,22,28,1,+1d6";
+
+      var deflectors =
+        "Deflector Shields,Cost,Size,CPU,Space,Power\n" +
+        "Cui-Cui Systems ESM-1 combat deflector screens,60,E,6,69,60\n" +
+        "Cui-Cui Systems ESM-2 combat deflector screens,128,E,6,68,76\n" +
+        "DayCorp Systems SSN-1 navigational shield generator,2,S,1,2,1\n" +
+        "DayCorp Systems SSN-2 navigational shield generator,4,,1,1,1\n" +
+        "Highgraphics-Warpwide GSN-1 navigation screens,33,G,5,45,34\n" +
+        "Highgraphics-Warpwide GSN-2 navigation screens,71,G,5,49,34\n" +
+        "Huang DEFENSE GSM-1 ultimate series combat shield,152,G,8,144,93\n" +
+        "Huang DEFENSE GSM-2 ultimate series combat shield,266,G,8,115,116\n" +
+        "Liu Maltech LSC-1 civilian deflector screens,18,L,3,28,27\n" +
+        "Liu Maltech LSC-2 civilian deflector screens,33,L,3,28,35\n" +
+        "Lunar Foundation GSC-1 civilian deflector shields,52,G,7,75,51\n" +
+        "Lunar Foundation GSC-2 civilian deflector shields,117,G,7,59,60\n" +
+        "Mekhdiev LSN-1 navigational deflector shields,7,L,2,11,16\n" +
+        "Mekhdiev LSN-2 navigational deflector shields,13,L,2,8,20\n" +
+        "Overcorp-Pan Prime LSM-1 combat sheld generator,30,L,4,42,34\n" +
+        "Overcorp-Pan Prime LSM-2 combat sheld generator,66,L,4,45,37\n" +
+        "Parsec Group SSC-1 civilan deflector screen,3,S,1,4,3\n" +
+        "Parsec Group SSC-2 civilan deflector screen,7,S,1,2,4\n" +
+        "Satellite Yards MSM-1 combat deflector shields,23,M,3,15,23\n" +
+        "Satellite Yards MSM-2 combat deflector shields,31,M,3,12,33\n" +
+        "Sato-Litvak Syndicate MSN-1 navigational deflector screen,3,M,1,6,7\n" +
+        "Sato-Litvak Syndicate MSN-2 navigational deflector screen,6,M,1,4,9\n" +
+        "Tyler Mechanics SSM-1 combat shield system,8,S,2,4,5\n" +
+        "Tyler Mechanics SSM-2 combat shield system,16,S,2,3,7\n" +
+        "Waybreak Exploration MSC-1 civilian shield generator,9,M,2,14,10\n" +
+        "Waybreak Exploration MSC-2 civilian shield generator,14,M,2,15,15\n" +
+        "Westdyne Enterprises ESN-1 cruiser navishield solution,14,E,3,24,25\n" +
+        "Westdyne Enterprises ESN-2 cruiser navishield solution,30,E,3,25,32\n" +
+        "Yang-Chen Co ESC-1 civilian shield generator,30,E,5,56,32\n" +
+        "Yang-Chen Co ESC-2 civilian shield generator,51,E,5,62,41";
+
+      var facilities =
+        "Customization,Luxury/crew,Space/crew,Cost/crew,CPU,Notes,Recommended\n" +
+        "Sick bay,2,3,20,0,Accomodates 1 patient,5% of crew capacity\n" +
+        "\"Cabin, standard\",0.5,1,0.5,0,Accomodates 1 crewmember,-\n" +
+        "\"Cabin, double\",0.3,0.5,0.3,0,,-\n" +
+        "\"Cabin, luxury/suite\",1,2,2,0,Accomodates 1 crewmember,-\n" +
+        "Chapel,1,3,2,0,,1% of crew capacity\n" +
+        "Galley,2,3,4,0,,5% of crew capacity\n" +
+        "Gymnasium,1,3,4,,5% of crew capacity\n" +
+        "Laboratory,-,4,8,0,,-\n" +
+        "Lounge/recreation area,1,1,1,0,,5% of crew capacity\n" +
+        "Messhall,1,4,2,0,,10% of crew capacity\n" +
+        "Bar/restaurant,2,4,10,0,0.5/m income,5% of crew capacity\n" +
+        "Shop,2,3,8,0,0.6/m income; type should be specified,-\n" +
+        "Observation lounge,0.5,3,2,0,,1% of crew capacity\n" +
+        "Arborium,2,5,5,0,,1% of crew capacity\n" +
+        "Brig,0.5,1,3,0,Each brig unit can hold 1 prisoner,1% of crew capacity\n" +
+        "Escape pod,0.1,0.1,0.5,0,Each pod can carry 1 crewmember,100% of crew capacity\n" +
+        "Transporter pad,-,1,20,0,A small transporter pad contains 1 transporter beam,5% of crew capacity\n" +
+        "Stateroom,0.5,2,2,0,,-\n" +
+        "Cinema/theater,2,1,4,0,,1% of crew capacity\n" +
+        "Holographic suite,3,4,20,0,,1% of crew capacity";
+
+      var ftl =
+        "FTL Engine,Cost,Size,CPU,Space,Power,Fuel Eff\n" +
+        "Arakaki-Cao Union MC-1 tachyon conduit system,119,M,5.6,9,28,1.6\n" +
+        "Butler Grav Vehicles GT-1 tachyon sail,569,G,11,117,55,-\n" +
+        "Cui-Green Alliance SH-1 hyperdrive,12,S,0.8,2,4,0.8\n" +
+        "Cui-Green Alliance SH-2 hyperdrive,26,S,1,3,5,1\n" +
+        "Cui-Green Alliance SH-3 hyperdrive,53,S,1.6,2,8,1\n" +
+        "Frontier Yards ET-1 tachyon sail,259,E,8.8,47,44,-\n" +
+        "Highfarer Enterprises GH-1 hyperdrive,256,G,8.8,38,44,0.8\n" +
+        "Highfarer Enterprises GH-2 hyperdrive,481,G,12,30,60,0.9\n" +
+        "Highwatch SC-1 tachyon conduit system,64,S,3,4,15,1.6\n" +
+        "Kinjo Hardware LH-1 hyperdrive,49,L,3.2,7,16,0.8\n" +
+        "Kinjo Hardware LH-2 hyperdrive,118,L,4,6,20,0.8\n" +
+        "Kinjo Hardware LH-2H hyperdrive,231,L,3.8,5,19,1\n" +
+        "Long Transport GC-1 tachyon conduit system,\"1,254\",G,25,68,125,1.6\n" +
+        "Micro PrimeTech MT-1 tachyon sail,93,M,3,15,15,-\n" +
+        "Newdyne Concepts LA-1 antimatter engine,92,L,4,18,20,1\n" +
+        "Newdyne Concepts LA-2 antimatter engine,180,L,5,19,25,0.9\n" +
+        "Newdyne Concepts LA-3 antimatter engine,261,L,8.4,19,42,1.4\n" +
+        "Outerdyne DayCorp MH-1 hyperdrive,33,M,1.8,4,9,0.8\n" +
+        "Outerdyne DayCorp MH-2 hyperdrive,64,M,2,3,10,0.9\n" +
+        "Panwatch-Microbeam EA-1 antimatter engine,140,E,6.4,33,32,1\n" +
+        "Panwatch-Microbeam EA-2 antimatter engine,336,E,11.4,35,57,1\n" +
+        "Panwatch-Microbeam EA-2H antimatter engine,589,E,14.6,51,73,1.1\n" +
+        "Panwatch-Microbeam EA-2S antimatter engine,\"1,369\",E,15.2,44,76,1.4\n" +
+        "Shooting Star LT-1 tachyon sail,160,L,5.4,26,27,-\n" +
+        "Star Products EC-1 tachyon conduit system,515,E,15,30,75,1.6\n" +
+        "Stellar Group EH-1 hyperdrive,109,E,4.8,13,24,0.8\n" +
+        "Stellar Group EH-2 hyperdrive,240,E,6,10,30,0.9\n" +
+        "TransCo NewStellar ST-1 tachyon sail,48,S,1.4,6,7,-\n" +
+        "Transwide Products LC-1 tachyon conduit system,288,L,8,14,40,1.6\n" +
+        "Warpdyne Asteroid Mining SA-1 antimatter engine,17,S,1.2,5,6,1\n" +
+        "Warpdyne Asteroid Mining SA-2 antimatter engine,35,S,1.6,4,8,1.1\n" +
+        "White AgriSpace MA-1 antimatter engine,34,M,3,11,15,1\n" +
+        "White AgriSpace MA-2 antimatter engine,84,M,3.6,10,18,1\n" +
+        "White AgriSpace MA-3 antimatter engine,114,M,5.6,9,28,1.3\n" +
+        "Yang Astrotech GA-1 antimatter engine,374,G,14.4,87,72,1\n" +
+        "Yang Astrotech GA-2 antimatter engine,721,G,15.8,79,79,1.1";
+
+      var subluminal =
+        "Sub-luminal Engine,Cost,Size,CPU,Space,Power,Fuel Eff\n" +
+        "Carter Psitech EL-1 liquid fuel rocket,14,E,5,9,50,0.5\n" +
+        "Carter Psitech EL-2 liquid fuel rocket,30,E,7.1,10,71,0.7\n" +
+        "Comet Lines SS-1 solar sail,1,S,0.3,5,3,-\n" +
+        "DeltaLight products LI-1 ion engine,22,L,2.6,22,26,1.4\n" +
+        "DeltaLight products LI-2 ion engine,41,L,3.2,25,32,1.4\n" +
+        "Du-Bobrikov Company ES-1 solar sail,7,E,1.9,47,19,-\n" +
+        "Highlight Robotics GL-1 liquid fuel rocket,30,G,6.9,16,69,0.5\n" +
+        "Highlight Robotics GL-2 liquid fuel rocket,70,G,9.9,15,99,0.5\n" +
+        "Narita-Guo Union LF-1 fusion reactor,26,L,5.3,40,53,1.2\n" +
+        "Narita-Guo Union LF-2 fusion reactor,51,L,4.5,34,45,1.4\n" +
+        "Newline-Silverwide Systems SL-1 liquid fuel rocket,1,S,1.1,1,11,0.5\n" +
+        "Newline-Silverwide Systems SL-2 liquid fuel rocket,3,S,1.3,1,13,0.5\n" +
+        "OmniDyne Lines EF-1 fusion reactor,94,E,9.2,73,92,1.4\n" +
+        "OmniDyne Lines EF-1 fusion reactor,55,E,8.2,84,82,1.2\n" +
+        "Oshiro Shipping MI-1 ion engine,11,M,1.8,10,18,1.4\n" +
+        "Oshiro Shipping MI-2 ion engine,25,M,2.1,9,21,1.6\n" +
+        "Panlight Universal MS-1 solar sail,2,M,0.7,10,7,-\n" +
+        "Panwatch Metallurgy GS-1 solar sail,19,G,3.5,92,35,-\n" +
+        "Satellite Concepts SI-1 ion engine,5,S,0.7,4,7,1.4\n" +
+        "Satellite Concepts SI-2 ion engine,8,S,1.1,4,11,1.4\n" +
+        "Star Corporation SF-1 fusion reactor,7,S,1.2,11,12,1.2\n" +
+        "Star Corporation SF-2 fusion reactor,11,S,1.9,12,19,1.2\n" +
+        "Stellar Products LS-1 solar sail,3,L,1.2,22,12,-\n" +
+        "Sun Technologies GF-1 fusion reactor,134,G,10.5,131,105,1.2\n" +
+        "Sun Technologies GF-2 fusion reactor,292,G,17.4,112,174,1.2\n" +
+        "Sunbeam Technologies EI-1 ion engine,38,E,3.8,37,38,1.4\n" +
+        "Sunbeam Technologies EI-2 ion engine,73,E,4.9,30,49,1.4\n" +
+        "SunCo Livestock LL-1 liquid fuel rocket,6,L,3.5,4,35,0.5\n" +
+        "SunCo Livestock LL-2 liquid fuel rocket,14,L,3,3,30,0.6\n" +
+        "Turner-Koga Inc ML-1 liquid fuel rocket,3,M,1.7,1,17,0.5\n" +
+        "Turner-Koga Inc ML-2 liquid fuel rocket,7,M,2.5,1,25,0.6\n" +
+        "WarpCo Alliance MF-1 fusion reactor,11,M,3.3,23,33,1.2\n" +
+        "WarpCo Alliance MF-2 fusion reactor,25,M,3.7,21,37,1.3\n" +
+        "WayDyne Incorporated GI-1 ion engine,80,G,5.3,88,53,1.4\n" +
+        "WayDyne Incorporated GI-2 ion engine,132,G,9.6,103,96,1.6";
+
+      var cloaking =
+        "Item,Space,Size,Cost,CPU,Notes\n" +
+        "Ultrabeam Y62 Cloaking Device,3,S,750,1,Restricted to ship classes I;II;III\n" +
+        "NorthCo GYN3 Starship Stealth System,10,M,2000,2,Restricted to ship classes IV;V;VI;VII\n" +
+        "Highdyne S2 Stealth Solution,40,L,10000,3,Restricted to ship classes VIII;IX;X;XI\n" +
+        "Daystellar-Silvertech Society JG51 Integrated Cloaking System,100,E,40000,4,Restricted to ship classes XII;XIII;XIV;XV;XVI\n" +
+        "Waywatch BI95 Cloaking Device,300,G,90000,5,Restricted to ship classes XVII;XVIII;XIX";
+
+      var weapons =
+        "Weapon System,Cost,Size,CPU,Space,Range,Attack,Damage\n" +
+        "Bai-Nakamura Fndtn ECPx-1 Blackflash concussion torpedo,202,E,4,8,16,+1d6,4d6 ballistic\n" +
+        "Barker Consortium GCCl-1 Thundermaker concussion cluster,344,G,5,50,25,+0d6,6d6 ballistic\n" +
+        "Brown Shipping ELS-1 Sunbat quad laser cannon,43,E,4,10,9,+0d6,4d6 heat\n" +
+        "Cui Shipyards EDP-1 Hotbuster dual pulse disruptor,112,E,4,8,8,+0d6,5d6 heat\n" +
+        "Cui-Cook Systems SNPx-1 Starspear nuclear warhead ,5,S,1,1,3,+1d6,2d6 heat/radiation\n" +
+        "Daybeam-Microsun MpaC-1 Hellbolt particle cannon,31,M,2,3,5,+0d6,2d6 heat\n" +
+        "Daywatch Art ENPx-1 Hellstorm nuclear warhead,63,E,4,8,15,+1d6,4d6 heat/radiation\n" +
+        "Frontier partnership GIC-1 Deathflash dual heavy ion cannon,161,G,5,47,14,+0d6,5d6 ion\n" +
+        "Galactic Company MLB-1 Skysteel beam laser,8,M,2,3,5,+0d6,2d6 heat\n" +
+        "Galaxy Society LCCl-1 Stingbird cluster missiles,120,L,3,11,10,+0d6,4d6 ballistic\n" +
+        "Green-Huang Enterprises EIP-1 Skyspear ion pulse,73,E,4,11,9,+0d6,5d6 ion\n" +
+        "Highbreak Liquids MHP-1 Fireswarm pulse phaser,35,M,2,3,4,+0d6,3d6 heat\n" +
+        "Highstellar Ltc. MNPx-1 Bigbow nuclear warhead,11,M,2,4,6,+1d6,2d6 heat/radiation\n" +
+        "Highwide Works MPPx-1 Thunderbat proximity photonic torpedo,50,M,2,3,7,+1d6,2d6 heat\n" +
+        "Hydyne Merccants LPR-1 Darksword railgun,15,L,3,11,4,+0d6,4d6 ballistic\n" +
+        "Imperial Syndicate GLP-1 Redstorm quad heavy turbolaser,108,G,5,53,12,+0d6,6d6 heat\n" +
+        "Imperial Syndicate GLP-2 Redstorm quad heavy turbolaser,236,G,5,43,14,+0d6,6d6 heat\n" +
+        "Imperial Syndicate GLP-3 Redstorm quad heavy turbolaser,396,G,5,39,15,+0d6,7d6 heat\n" +
+        "Long-Summers Industries SPPx-1 Stingstorm photonic torpedo,20,S,1,1,4,+1d6,1d6 heat\n" +
+        "Lunar Alliance GNPx-1 Mushroom nuclear warhead,140,G,5,43,18,+1d6,5d6 heat/radiation\n" +
+        "MegaCorp-Panstellar Lines LNPx-1 Blackfury nuclear warhead,26,L,3,8,7,+1d6,3d6 heat/radiation\n" +
+        "Mekhdiev Construction SDB-1 Thunderray beam disruptor array,9,S,1,1,3,+0d6,1d6 heat\n" +
+        "Meteor Concepts GPPx-1 Hellbow photonic torpedo,484,G,5,48,26,+0d6,5d6 heat\n" +
+        "Microtech Alliance LBP-1 Stingmaker dual pulse blaster,21,L,3,9,3,+0d6,4d6 heat\n" +
+        "Microwatch Hardware EPC-1 Leadbolt projectile cannon,31,E,4,9,8,+0d6,4d6 ballistic\n" +
+        "Nakamura Robotics SIC-1 Starbird ion cannon,7,S,1,1,3,+0d6,1d6 ion\n" +
+        "Narita Maltech SLP-1 Blackbuster pulse laser,5,S,1,1,2,+0d6,2d6 heat\n" +
+        "North Prime Weapons LHB-1 Redsword phaser beam,68,L,3,11,8,+0d6,3d6 heat\n" +
+        "North Prime Weapons LHB-1H Redsword phaser beam,216,L,3,9,7,+1d6,5d6 heat\n" +
+        "Omnitech-Prime SPR-1 Skyrain magnetic railgun,3,S,1,1,2,+0d6,2d6 ballistic\n" +
+        "Outer Sun Products EBP-1 Hellbuster pulse blaster,42,E,4,10,4,+0d6,5d6 heat\n" +
+        "Outerwatch-Ultrabeam EHP-1 Hotflash pulse phaser,168,E,4,10,10,+0d6,5d6 heat\n" +
+        "Overbeam Biotech MPC-1 Sunbow projectile cannon,6,M,2,3,5,+0d6,2d6 ballistic\n" +
+        "Saito Cybernetics EPCl-1 Whiteswarm photonic torpedo cluster,233,E,4,8,17,+0d6,5d6 heat\n" +
+        "Silverfarer Group EPaC-1 Skybolt particle cannon,148,E,4,8,10,+0d6,4d6 heat\n" +
+        "Solar Industries GHB-1 Excelsior phaser beam emitter,276,G,5,57,15,+0d6,5d6 heat\n" +
+        "Southtech Heavy Weapons LIC-1 Bigstreak ion cannon,33,L,3,8,7,+0d6,3d6 ion\n" +
+        "Star Products SHB-1 Deathsword phaser system,13,S,1,1,3,+0d6,1d6 heat\n" +
+        "Tan-Korovin Enterprises SBP-1 Hotbuster pulse blaster,5,S,1,1,2,+0d6,2d6 heat\n" +
+        "Terra Prime SCCl-1 Starbuster cluster concussion missile launcher,23,S,1,1,4,+0d6,2d6 ballistic\n" +
+        "Thomas Foundation Spab-1 Skybow particle beam,12,S,1,1,3,+0d6,1d6 heat\n" +
+        "Transbeam Art MIB-1 Drainpipe ion beam,12,M,2,3,5,+0d6,2d6 ion\n" +
+        "Transco Inc. GDB-1 Loudstream disruptor beam,162,G,5,56,13,+0d6,5d6 heat\n" +
+        "Translight Colonization MBB-1 Bigflash beam blaster,9,M,2,3,3,+0d6,2d6 heat\n" +
+        "UltraCo-NewCo LDP-1 Redfury disruptor beam,58,L,3,12,5,+0d6,3d6 heat\n" +
+        "Ultrastellar Railguns GPR-1 Ultimate Rain magnetic railgun,70,G,5,41,14,+0d6,6d6 ballistic\n" +
+        "WarpSun Incorprated MDB-1 Flamefury pulse disruptor,21,M,2,4,3,+0d6,3d6 heat\n" +
+        "WayCorp Holography GPaB-1 Deathspear particle beam,296,G,5,48,17,+0d6,5d6 heat\n" +
+        "Wayfarer Aeronautics LPPx-1 Flamespear photonic torpedo,117,L,3,8,10,+1d6,3d6 heat\n" +
+        "Waywatch Lines LLP-1 Firespear pulse laser,21,L,3,8,4,+0d6,4d6 heat\n" +
+        "Waywatch Lines MCPx-1 Redswarm proximity concussion missile,45,M,2,4,7,+1d6,2d6 ballistic\n" +
+        "Weststellar Ltd. LPaB-1 Hellseeker particle beam,66,L,3,11,8,+0d6,3d6 heat\n" +
+        "Young Asteroid Co. GBB-1 Flamebird blaster beam,109,G,5,60,8,+0d6,5d6 heat";
+
+      var systems =
+        "Item,Type,Space,Size,Cost,CPU,Notes\n"+
+        "Ultrabeam Y62 Cloaking Device,Cloaking Device,3,S,750,1,Ship classes I-III only\n"+
+        "NorthCo GYN3 Starship Stealth System,Cloaking Device,10,M,2000,2,Ship classes IV-VII only\n"+
+        "Highdyne S2 Stealth Solution,Cloaking Device,40,L,10000,3,Ship classes VIII-XI only\n"+
+        "Daystellar-Silvertech Society JG51 Integrated Cloaking System,Cloaking Device,100,E,40000,4,Ship classes XII-XVI only\n"+
+        "Waywatch BI95 Cloaking Device,Cloaking Device,300,G,90000,5,Ship classes XVII-XIX only\n"+
+        "Galaxy Technologies X2 Tractor Beam,Tractor Beam,5,S,10,-,\"STR 2, range 5\"\n"+
+        "Transwatch L4 Magnetic Beam,Tractor Beam,10,M,30,-,\"STR 4, range 7\"\n"+
+        "Warp Sun Metallurgy G75 Tractor/Pressor System,Tractor Beam,15,L,75,-,\"STR 6, range 10\"\n"+
+        "Omnibeam J21 Gravity Beam,Tractor Beam,20,E,120,-,\"STR 8, range 12\"\n"+
+        "Outer Sun Merchants CCH80 Magnetic Projector,Tractor Beam,25,G,300,-,\"STR 10, range 15\"\n"+
+        "Fuel bay alteration,Fueling Equipment,1 CU/10 fuel,-,0.5/fuel,-,This can increase or decrease fuel capacity\n"+
+        "Over Prime O68 Fuel Scoop,Fueling Equipment,5,S,100,-,Gathers 1 fuel unit per hour\n"+
+        "Black Hole Products P40 Fuel Scoop,Fueling Equipment,40,M,250,-,Gathers 5 fuel units per hour\n"+
+        "Davison Aeronautics SAA48 Fuel Scoop,Fueling Equipment,90,E,1000,-,Gathers 20 fuel units per hour\n"+
+        "Westbreak-NewCorp Partnership H80 External Cargo Bay,Cargo Equipment,-,S,30,-,\"Adds 20 CU; -2 DEFENSE, -2 SPEED\"\n"+
+        "Daylight KE27 External Cargo Bay,Cargo Equipment,-,M,100,-,\"Adds 250 CU; -2 DEFENSE, -2 SPEED\"\n"+
+        "SilverCorp E95 External Cargo Bay,Cargo Equipment,-,L,250,-,\"Adds 1,000 CU; -2 DEFENSE, -2 SPEED\"\n"+
+        "Parsec Systems ZM2 Shuttle/fighter Bay,Hangar,25,S,400,1,Room for 1 shuttle or fighter\n"+
+        "Megalight EI93 Shuttle/fighter Bay,Hangar,80,M,700,1,Room for 4 shuttles or fighters\n"+
+        "Ultrabeam VN34 Shuttle/fighter Bay,Hangar,150,L,1000,2,Room for 16 shuttles or fighters\n"+
+        "Waydyne Shuttle/fighter Bay,Hangar,250,E,1500,2,Room for 32 shuttles or fighters\n"+
+        "\"Newwide Gravitics DI11 Shuttle/fighter Bay,Hangar,\",460,G,2000,3,Room for 64 shuttles or fighters\n"+
+        "Ultradyne Lines CP97 Repair Bay,Engineering Modification,10,M,200,4,Repairs 1 SS per turn\n"+
+        "Newwatch IE17 Remote Repair Bay,Engineering Modification,20,L,500,8,Repairs 1 SS per turn; range 4 hexes\n"+
+        "Daylight CEA46 Tactical Command Center,C&C,2,S,200,3,Grants +1d6 bonus to 4 ships; range 8 hexes\n"+
+        "OmniCo NE79 Tactical Operations Center,C&C,5,M,500,6,Grants +1d6 bonus to 10 ships; range 12 hexes\n"+
+        "Terradyne TAC-COM WPA40,C&C,10,L,1000,9,Grants +1d6 bonus to 25 ships; range 16 hexes\n"+
+        "Omnibreak Group GO17 Tactical Command Center,C&C,20,E,2500,12,Grants +1d6 bonus to 50 ships; range 20 hexes\n"+
+        "Kavelin-Song Ltd. N82 Tactical Coordination Module,C&C,0,G,5000,15,Grants +1d6 bonus to 100 ships; range 25 hexes\n"+
+        "TerraCo L56 ECM System,ECM,5,S,50,2,\"Missiles have a -1d6 penalty to hit the ship, as do scanning attempts; range 8 hexes\"\n"+
+        "Omniwide Productions YPO57 Electronic Countermeasures,ECM,10,M,100,3,\"Missiles have a -1d6 penalty to hit the ship, as do scanning attempts; range 12 hexes\"\n"+
+        "Ultralight BMS55 Jamming System,ECM,15,L,250,4,\"Missiles have a -1d6 penalty to hit the ship, as do scanning attempts; range 16 hexes\"\n"+
+        "Sun Prime LC84 Precision Electronic Warfare System,ECM,25,E,500,5,\"Missiles have a -1d6 penalty to hit the ship, as do scanning attempts; range 20 hexes\"\n"+
+        "PanCorp Gravitics YN28 Active Decoy Transmitter,ECM,35,G,1000,6,\"Missiles have a -1d6 penalty to hit the ship, as do scanning attempts; range 25 hexes\"\n"+
+        "Electronic Reinforcement,ECM,10/point,-,500/point,0.5/point,Control computer defenses grant a +1 ELECTRONIC DEFENSE bonus per point purchased.\n";
+
+      var passengers = [
+        {Type: "Additional Crew", Space: "2", Cost: "0.1"},
+        {Type: "Troops", Space: "2", Cost: "0.1"},
+        {Type: "Standard Passengers", Space: "2", Cost: "0.2"},
+        {Type: "Luxury Passengers", Space: "4", Cost: "0.3"}
+      ];
+
+      var superstructures = [
+        {Type: "Additional SS", Space: "1", Cost: "0.5", Notes: "Base (free) SS = ship class"},
+        {
+          Type: "Armor, reactive",
+          Space: "10",
+          Cost: "10",
+          Notes: "1 SOAK per armor point/class vs. ballistic; 1.5 SOAK per armor point/class vs energy."
+        },
+        {
+          Type: "Armor, ablative",
+          Space: "10",
+          Cost: "10",
+          Notes: "1 SOAK per armor point/class vs. energy; 1.5 SOAK per armor point/class vs ballistic."
+        }
+      ];
+
+      var pointDefences =
+        "Point Defenses,Space,CPU,Cost,DEFENSE,Aura\n"+
+        "Railgun,10,0.5,10,2,0\n"+
+        "Heavy turbolaser battery,20,0.5,10,1,2\n"+
+        "Dual gauss gun,15,0.5,30,3,0\n"+
+        "Micro-phaser turret,30,1,30,3,0\n"+
+        "Kinetic energy flak weapon,10,0.5,10,3,0";
+    });
+
+
+
+},{"angular":18}],5:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('CrewCtrl', ["$scope", function CrewCtrl($scope) {
+    var KEY = $scope.KEY = 'Crew';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+
+    $scope.crewValueAddHash = {};
+    $scope.crewValueRemoveHash = {};
+
+    $scope.crewHash = $scope.$parent.crewHash;
+
+  }]);
+
+},{"angular":18}],6:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('DeflectorShieldCtrl', ["$scope", function DeflectorShieldCtrl($scope) {
+    var KEY = $scope.KEY = 'Deflector Shields';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+    var PKEY = $scope.PKEY = 'Point Defenses';
+    if(!$scope.ship[PKEY]) $scope.ship[PKEY] = {};
+
+    $scope.deflectorHash = $scope.$parent.deflectorHash;
+    $scope.pointDefensesHash = $scope.$parent.pointDefensesHash;
+
+
+  }]);
+
+},{"angular":18}],7:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('FacilitiesCtrl', ["$scope", function FacilitiesCtrl($scope) {
+    var KEY = $scope.KEY = 'Facilities';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+
+    $scope.facilitiesValueAddHash = {};
+    $scope.facilitiesValueRemoveHash = {};
+
+    $scope.facilitiesHash = $scope.$parent.facilitiesHash;
+  }]);
+
+},{"angular":18}],8:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('FtlCtrl', ["$scope", function FtlCtrl($scope) {
+    var KEY = $scope.KEY = 'FTL Engine';
+    var BKEY = $scope.BKEY = 'Backup FTL Engine';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+    if(!$scope.ship[BKEY]) $scope.ship[BKEY] = {};
+    $scope.ftlHash = $scope.$parent.ftlHash;
+  }]);
+
+},{"angular":18}],9:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('GeneralCtrl', ["$scope", function GeneralCtrl($scope) {
+    var KEY = $scope.KEY = 'General';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+
+    $scope.generalHash = $scope.$parent.generalHash;
+
+    $scope.notValidHull = function(string) {
+      if(!$scope.ship.hull) return true;
+      var arr = string.split(' ');
+      var validHulls = arr[arr.length-1].split(';');
+      return validHulls.indexOf($scope.ship.hull.Class) === -1;
+    }
+
+  }]);
+
+},{"angular":18}],10:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('HangarsCtrl', ["$scope", function HangarsCtrl($scope) {
+
+    var KEY = $scope.KEY = 'Hangar Bay';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+    $scope.hangarHash = $scope.$parent.hangarHash;
+  }]);
+
+
+},{"angular":18}],11:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('SensorCtrl', ["$scope", function CommandCtrl($scope) {
+  }]);
+
+},{"angular":18}],12:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('ShipViewCtrl', ["$scope", function ShipViewCtrl($scope) {
+    $scope = $scope.$parent;
+
+    $scope.calculateWeight = function(weightString) {
+      try {
+        var split = weightString.split(',').join('').split('-');
+        var min = parseInt(split[0].trim());
+        var max = parseInt(split[1].trim());
+
+        var diff = max - min;
+
+        var currentSpace = $scope.currentSpace();
+        var maxSpace = $scope.maxSpace();
+
+        return min + (currentSpace/maxSpace * diff);
+      } catch(e) {
+        return 0;
+      }
+
+    };
+
+      $scope.calculateCrew = function() {
+        return $scope.getTotalCrew();
+      };
+
+      $scope.calculateWeaponRange = function(weaponName) {
+        return Math.min($scope.weaponHash[weaponName]['Range'], $scope.ship.sensor.Range);
+      };
+
+  }]);
+
+
+},{"angular":18}],13:[function(require,module,exports){
+/*global angular */
+
+/**
+ * The main controller for the app. The controller:
+ * - retrieves and persists the model via the todoStorage service
+ * - exposes the model to the template and provides event handlers
+ */
+var angular = require('angular');
+
+var flatComponents = ['hull', 'sensor'];
+
+var quantityComponents = {
+  'Crew': 'crewHash',
+  'Control Computers': "computerHash",
+  'Sub-luminal Engine': 'sublHash',
+  'FTL Engine': 'ftlHash',
+  'Point Defenses': 'pointDefensesHash',
+  'Deflector Shields': 'deflectorHash',
+  'Superstructure': 'superstructureHash',
+  'Weapon System': 'weaponHash',
+  'Facilities': 'facilitiesHash',
+  'Hangars': 'hangarHash',
+  'General': 'generalHash'
+};
+
+var crewValues = ['Space', 'Cost', 'Luxury'];
+
+var getComponentValue = function (c, val) {
+  if (c !== undefined && c !== null) {
+    if (_.has(c, val)) {
+      return c[val];
+    } else {
+      return 0;
+    }
+  }
+  return 0;
+};
+
+var getQuantityValue = function (shipPart, val, partsList) {
+  var total = 0;
+  if (shipPart !== undefined && shipPart !== null) {
+    angular.forEach(shipPart, function (quantity, component) {
+      if (_.has(partsList[component], val)) {
+        var b = +(partsList[component][val]);
+        if (!(isNaN(b))) {
+          total += b * quantity;
+        }
+      }
+    });
+  }
+  return total;
+};
+
+var getCrewValue = function (shipPart, val, partsList, crewSize) {
+  try {
+    if (_.contains(crewValues, val) && crewSize > 0) {
+      var key = val + "/crew";
+      return getQuantityValue(shipPart, key, partsList);
+    } else {
+      return 0;
+    }
+  } catch (e) {
+    console.log(e);
+    return 0;
+  }
+}
+
+var getTotalShipValue = function (ship, valueName, scope) {
+  var base = 0;
+  var crewSize = getTotalCrew(ship, scope);
+  angular.forEach(flatComponents, function (c) {
+    base += getComponentValue(ship[c], valueName);
+  });
+  angular.forEach(quantityComponents, function (hashName, componentName) {
+    var hash = scope[hashName];
+    base += getQuantityValue(ship[componentName], valueName, hash);
+    base += getCrewValue(ship[componentName], valueName, hash, crewSize);
+  });
+  return base;
+};
+
+var getAllShipValues = function (ship, valueName, scope) {
+  return getTotalShipValue(ship, valueName, scope);
+};
+
+var getCost = function (ship, scope) {
+  return getTotalShipValue(ship, 'Cost', scope);
+};
+
+var getSpace = function (ship, scope) {
+  return getTotalShipValue(ship, 'Space', scope);
+};
+
+var getSpaceMax = function (ship) {
+  if (_.has(ship, 'hull')) {
+    return ship.hull['Max CU'];
+  } else {
+    return 0;
+  }
+};
+
+var getCpu = function (ship, scope) {
+  return (getTotalShipValue(ship, 'CPU', scope) - getCpuMax(ship, scope));
+};
+
+var getCpuMax = function (ship, scope) {
+  if (_.has(ship, 'Control Computers')) {
+    var q = getQuantityValue(ship['Control Computers'], 'CPU', scope.computerHash);
+    return q;
+  } else {
+    return 0;
+  }
+};
+
+var getHullClassInteger = function (ship, hulls) {
+  var index = hulls.indexOf(ship.hull);
+  return index + 1;
+};
+
+var getTotalCrew = function (ship, scope) {
+  try {
+    var baseCrew = ship.hull.Crew;
+    if (_.has(ship, 'Crew')) {
+      angular.forEach(ship.Crew, function(quantity, crewType) {
+        console.log("Crew has " + crewType + " (x " + quantity);
+        baseCrew += quantity;
+      });
+    }
+    var modPercent = 0;
+
+    _.each(scope.ship['Control Computers'], function(num, key) {
+      var baseString = scope.computerHash[key].Crew;
+      if(!_.contains(baseString, '%')) return;
+      var mod = +(baseString.split('%')[0]);
+      modPercent += mod*num;
+    });
+
+    return Math.floor(baseCrew + (baseCrew*(modPercent/100)));
+  } catch (e) {
+    return 0;
+  }
+};
+
+var tabs = [
+  {heading: 'Basics', route: 'main.basics'},
+  {heading: 'Hull Class', route: 'main.hull'},
+  {heading: 'Command & Control', route: 'main.command'},
+  {heading: 'Ship Sensors', route: 'main.sensors'},
+  {heading: 'Crew', route: 'main.crew'},
+  {heading: 'Sub-Luminal Engines', route: 'main.subluminal'},
+  {heading: 'FTL Engines', route: 'main.ftl'},
+  {heading: 'Superstructure', route: 'main.superstructure'},
+  {heading: 'Deflector Shields', route: 'main.deflectors'},
+  {heading: 'Weaponry', route: 'main.weaponry'},
+  {heading: 'Facilities', route: 'main.facilities'},
+  {heading: 'Hangars', route: 'main.hangars'},
+  {heading: 'General Equipment', route: 'main.general'},
+  {heading: 'Your Ship', route: 'main.ship'}
+];
+
+angular.module('woin-starship')
+  .controller('StarshipCtrl', ['$scope', 'Components', function StarshipCtrl($scope, Components) {
+    'use strict';
+
+    // initialize data
+    $scope.tabs = tabs;
+    $scope.ship = {name: "", description: "", hullConfig: {}};
+
+    Components.loadCsvData($scope);
+
+    // helper functions for cost & cargo calculations
+    $scope.totalCost = function () {
+      return getCost($scope.ship, $scope);
+    };
+
+    $scope.currentSpace = function () {
+      return getSpace($scope.ship, $scope);
+    };
+
+    $scope.maxSpace = function () {
+      return getSpaceMax($scope.ship, $scope);
+    };
+
+    $scope.maxCpu = function () {
+      return getCpuMax($scope.ship, $scope);
+    };
+
+    $scope.currentCpu = function () {
+      return getCpu($scope.ship, $scope);
+    };
+
+    $scope.isHullConfigDisabled = function(config) {
+      if(!config.levels) return false;
+      if(config.levels && !$scope.ship.hull) return true;
+      return config.levels.indexOf($scope.ship.hull.Class) === -1;
+    };
+
+    $scope.calculateSublSpeed = function (engineName, quantity) {
+      var totalPower = $scope.sublHash[engineName]['Power'] * quantity;
+      var hullClass = getHullClassInteger($scope.ship, $scope.hulls);
+
+      if (totalPower !== undefined && hullClass !== undefined) {
+        return totalPower/hullClass;
+      } else {
+        return 0;
+      }
+    };
+
+    $scope.getTotalCrew = function() {
+      return getTotalCrew($scope.ship, $scope);
+    };
+
+    $scope.calculateFtl = function (engineName, quantity) {
+      var totalPower = $scope.ftlHash[engineName]['Power'] * quantity;
+      var hullClass = getHullClassInteger($scope.ship, $scope.hulls);
+      var maxFtl = getTotalShipValue($scope.ship, 'Max FTL', $scope);
+
+      if (totalPower !== undefined && hullClass !== undefined) {
+        var max = totalPower/hullClass;
+        if (max <= maxFtl) {
+          return max;
+        } else {
+          return maxFtl;
+        }
+      } else {
+        return 0;
+      }
+    };
+
+    $scope.calculateOperationalRange = function() {
+      if (!$scope.ship.hull) return;
+      var shipClass = Number.fromRoman($scope.ship.hull.Class);
+      var modifier = getAllShipValues($scope.ship, 'Fuel Eff', $scope);
+
+      return Math.pow(shipClass, 3) * modifier;
+    };
+
+    $scope.calculateSuperstructure = function() {
+      try {
+        var hullClass = getHullClassInteger($scope.ship, $scope.hulls);
+        var baseSs = hullClass * 3;
+        var additional = $scope.ship.Superstructure["Additional SS"];
+        if (additional !== undefined) {
+          baseSs += additional;
+        }
+        return baseSs;
+      } catch(e) {
+        return 0;
+      }
+
+    };
+
+    $scope.calculateDefense = function() {
+      var base = getAllShipValues($scope.ship, 'DEFENSE', $scope);
+      if ($scope.ship['Point Defense'] && $scope.ship['Point Defense']['Point defenses']) {
+        var pointDefense = $scope.ship['Point Defense']['Point defenses'];
+        var hullClass = getHullClassInteger($scope.ship, $scope.hulls);
+        base -= (pointDefense * 2);
+        base += ((pointDefense * 2)/hullClass);
+      }
+      return base;
+    };
+
+    $scope.calculateElectronicDefense = function() {
+      try {
+        var bonus = getAllShipValues($scope.ship, 'ELECTRONIC DEFENSE', $scope);
+        var base = getCpu($scope.ship, $scope);
+        return Math.floor((base/2) + bonus);
+      } catch (e) {
+        return 0;
+      }
+
+    };
+
+    $scope.presentArmor = function() {
+      var base = "";
+      var ballistic = 0;
+      var energy = 0;
+      var hullClass = getHullClassInteger($scope.ship, $scope.hulls);
+      var reactive = 0;
+      var ablative = 0;
+
+      if ($scope.ship.Superstructure !== undefined) {
+        reactive = $scope.ship.Superstructure["Armor, reactive"];
+        ablative = $scope.ship.Superstructure["Armor, ablative"];
+      }
+
+      if (reactive !== undefined && reactive !== 0) {
+        ballistic += (reactive/hullClass);
+        energy += (1.5 * reactive / hullClass);
+        base += reactive + "x reactive ";
+      }
+
+      if (ablative !== undefined && ablative !== 0) {
+        ballistic += (1.5 * ablative/hullClass);
+        energy += (ablative / hullClass);
+        base += ablative + "x ablative ";
+      }
+
+      if (base === "") {
+        base = "-";
+      } else {
+        base += "(SOAK " + ballistic + " ballistic, " + energy + " energy.)";
+      }
+      return base;
+    };
+
+    $scope.presentCargo = function() {
+      if ($scope.ship.hull !== undefined) {
+        var initialCargo = $scope.ship.hull['Max CU'];
+        var amountRemaining = $scope.maxSpace() - $scope.currentSpace();
+        var tonnage = $scope.maxSpace() * 50;
+        return initialCargo + " ("+amountRemaining+" available; capacity " + tonnage + " tons)";
+      } else {
+        return "-";
+      }
+    };
+
+    $scope.presentType = function(type) {
+      if (type.Traits === undefined) {
+        return "None";
+      } else {
+        return type.Type;
+      }
+    };
+
+    $scope.calculateLuxury = function() {
+      var luxuryTotal = getAllShipValues($scope.ship, 'Luxury/crew', $scope);
+      var crewTotal = $scope.getTotalCrew();
+      var lux = (luxuryTotal / crewTotal) * 100;
+
+      if(_.isNaN(lux)) lux = 0;
+
+      lux = Math.round(lux * 100) / 100;
+
+      if (lux < 50) {
+        return lux + "% (Spartan: -2d6)";
+      } else if (lux < 90) {
+        return lux + "% (Poor: -1d6)";
+      } else if (lux < 150) {
+        return lux + "% (Adequate: -)";
+      } else if (lux < 199) {
+        return lux + "% (Comfortable: +1d6)";
+      } else {
+        return lux + "% (Decadent: -1d6)";
+      }
+    };
+
+    $scope.clearCloaking = function() {
+      if(!$scope.ship.General) return;
+      _.each($scope.ship.General, function(value, key) {
+        if(_.findWhere($scope.systems.cloaking, {Item: key})) {
+          delete $scope.ship.General[key];
+        }
+      });
+    };
+
+    $scope.calculateSoak = function(power, quantity) {
+      var hullClass = getHullClassInteger($scope.ship, $scope.hulls);
+      return parseInt(power * quantity / hullClass);
+    };
+
+    $scope.isHangar = function(itemName) {
+      return ($scope.generalHash[itemName] && $scope.generalHash[itemName].hangar !== undefined);
+    };
+
+    $scope.getCrewSize = function() {
+      return getTotalCrew($scope.ship, $scope);
+    };
+
+    $scope.getHangarQty = function(hangar) {
+      return $scope.generalHash[hangar].Craft;
+    };
+
+    $scope.addQuantitied = function (component, key, item) {
+      if (component[key] === undefined) {
+        component[key] = item;
+        component[key].quantity = 1;
+      } else {
+        component[key].quantity += 1;
+      }
+    };
+
+    $scope.removeQuantitied = function (component, key) {
+      if (component[key].quantity > 1) {
+        component[key].quantity -= 1;
+      } else {
+        var index = component.indexOf(key);
+        component.splice(index, 1);
+      }
+    };
+
+    $scope.isEmpty = function (KEY) {
+      return _.size($scope.ship[KEY]) === 0;
+    };
+
+    $scope.incrementItem = function (KEY, itemKey, value) {
+      if(!value) value = 1;
+      if (!$scope.ship[KEY][itemKey]) $scope.ship[KEY][itemKey] = 0;
+      $scope.ship[KEY][itemKey] += value;
+
+      if(_.isNaN($scope.ship[KEY][itemKey])) $scope.ship[KEY][itemKey] = 0;
+    };
+
+    // only allow one type of the item at a time
+    $scope.incrementOneItem = function (KEY, itemKey) {
+      var keys = Object.getOwnPropertyNames($scope.ship[KEY]);
+
+      if (keys.length === 0 ||  (_.includes(keys, itemKey))) {
+        $scope.incrementItem(KEY, itemKey);
+      }
+    };
+
+    $scope.hasThisItem = function (KEY, itemKey) {
+      var keys = Object.getOwnPropertyNames($scope.ship[KEY]);
+
+      return (keys.length === 0 || (_.includes(keys, itemKey)));
+    };
+
+    $scope.decrementItem = function (KEY, itemKey, value) {
+      if(!value) value = 1;
+      $scope.ship[KEY][itemKey] -= value;
+      if ($scope.ship[KEY][itemKey] <= 0 || _.isNaN($scope.ship[KEY][itemKey])) delete $scope.ship[KEY][itemKey];
+    };
+
+    $scope.save = function() {
+      var filename = "starship-"+Date.now()+".json";
+      var str = JSON.stringify($scope.ship, null, 4);
+      var blob = new Blob([str], {type: 'application/json'});
+      var a = document.createElement('a');
+
+      if (navigator.msSaveBlob) {
+        return navigator.msSaveBlob(blob, filename);
+
+      } else if('download' in a) {
+        var url = URL.createObjectURL(blob);
+        a.download = filename;
+        a.href = url;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return true;
+      }
+    };
+
+    $scope.load = function(files) {
+      if(!files.length) return;
+
+      var reader = new FileReader();
+
+      reader.onload = function() {
+        var text = reader.result;
+        $scope.ship = JSON.parse(text);
+        _.each($scope.hulls, function(hull) {
+          if(hull.Class === $scope.ship.hull.Class) {
+            $scope.ship.hull = hull;
+          }
+        });
+        $scope.$apply(); // wtf angular?
+      };
+
+      reader.readAsText(files[0], 'UTF-8');
+    };
+
+  }]);
+
+
+},{"angular":18}],14:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('SubluminalCtrl', ["$scope", function SubluminalCtrl($scope) {
+    var KEY = $scope.KEY = 'Sub-luminal Engine';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+    $scope.sublHash = $scope.$parent.sublHash;
+  }]);
+
+},{"angular":18}],15:[function(require,module,exports){
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('SuperstructureCtrl', ["$scope", function CrewCtrl($scope) {
+    var KEY = $scope.KEY = 'Superstructure';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+
+    $scope.superstructureHash = $scope.$parent.superstructureHash;
+  }]);
+
+},{"angular":18}],16:[function(require,module,exports){
+
+angular = require('angular');
+
+angular.module('woin-starship')
+  .controller('WeaponCtrl', ["$scope", function WeaponCtrl($scope) {
+
+    var KEY = $scope.KEY = 'Weapon System';
+    if(!$scope.ship[KEY]) $scope.ship[KEY] = {};
+    $scope.weaponHash = $scope.$parent.weaponHash;
+  }]);
+
+},{"angular":18}],17:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.15
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -26307,3 +29043,11 @@ var minlengthDirective = function() {
 })(window, document);
 
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
+},{}],18:[function(require,module,exports){
+require('./angular');
+module.exports = angular;
+
+},{"./angular":17}]},{},[1])
+
+
+//# sourceMappingURL=bundle.26f7df01.js.map

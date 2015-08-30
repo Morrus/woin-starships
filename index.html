@@ -29,7 +29,7 @@
 					<ul class="nav navbar-nav navbar-right">
 						<li>
 							<a>CPU: {{ currentCpu() | number:2 }} ({{maxCpu() | number:2}} Max)
-								Cargo Units: {{ presentCargo() }}
+								Cargo Units: {{ maxSpace() - currentSpace() }}
 								Credits Spent: {{ totalCost() | number:2 }}</a>
 						</li>
 					</ul>
@@ -40,7 +40,7 @@
 			<ui-view />
 		</div>
 
-        <script src="./js/bundle.5a5530e4.js"></script>
+        <script src="./js/bundle.26f7df01.js"></script>
 		<script src="./bower_components/jquery/dist/jquery.min.js"></script>
 		<script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 		<script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js" ></script>
